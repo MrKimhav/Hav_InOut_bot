@@ -54,30 +54,21 @@
 
 <script>
 function sendData() {
-    const goal = document.getElementById("goal");
-    const out = document.getElementById("out");
-    const inVal = document.getElementById("in");
-    const sold = document.getElementById("sold");
-    const btn = document.getElementById("submitBtn");
+    // ... ការចាប់យក Element ផ្សេងៗ ...
+    const sheetSelect = document.getElementById("sheetName").value; // ចាប់ឈ្មោះ Sheet
 
-    // ១. ពិនិត្យទិន្នន័យទទេ
-    if (!goal.value.trim() || !out.value.trim() || !inVal.value.trim() || !sold.value.trim()) {
-        alert("⚠️ សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
-        return; 
-    }
-
-    // ២. ប្តូរស្ថានភាពប៊ូតុង
-    btn.disabled = true;
-    btn.innerText = "កំពុងរក្សាទុក...";
-
-    // ៣. រៀបចំទិន្នន័យ
+    // រៀបចំ formData
     const formData = {
+        sheetName: sheetSelect, // បញ្ជូនឈ្មោះ Sheet ទៅកាន់ Code.gs
         date: new Date().toISOString(),
         goal: goal.value,
         out: out.value,
         in: inVal.value,
         sold: sold.value
     };
+    
+    // ... កូដ fetch បន្តទៅទៀត ...
+}
 
     // ៤. ផ្ញើទៅ Google Sheets (URL របស់អ្នក)
     const scriptURL = "https://script.google.com/macros/s/AKfycbxKARpixOKcsRiXJnT80kPO0cBQbUt4i3RRsfVAtGjIvn51Amkdj_4kcHA89hkAfYCZ/exec"; 
@@ -105,6 +96,7 @@ function sendData() {
 
 </body>
 </html>
+
 
 
 
