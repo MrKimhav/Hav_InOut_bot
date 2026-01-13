@@ -59,24 +59,26 @@
 
 <script>
 function sendData() {
-    // ១. ចាប់យក Element
+    // ១. ចាប់យក Element ឱ្យបានច្បាស់លាស់
     const goal = document.getElementById("goal");
     const out = document.getElementById("out");
     const inVal = document.getElementById("in");
     const sold = document.getElementById("sold");
     const btn = document.getElementById("submitBtn");
 
-    // ២. ពិនិត្យថាមានប្រអប់ទទេឬអត់ (Validation)
-    if (!goal.value || !out.value || !inVal.value || !sold.value) {
-        alert("សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
-        return; 
+    // ២. ពិនិត្យលក្ខខណ្ឌ (Validation)
+    // ប្រសិនបើមានប្រអប់ណាមួយទទេ ឬស្មើនឹង "0" (ក្នុងករណីអ្នកចង់ឱ្យបំពេញលេខលើសពី 0)
+    if (goal.value.trim() === "" || out.value.trim() === "" || inVal.value.trim() === "" || sold.value.trim() === "") {
+        alert("⚠️ សូមបំពេញទិន្នន័យក្នុងប្រអប់ឱ្យបានគ្រប់រន្ធសិន មុននឹងចុចរក្សាទុក!");
+        
+        // បញ្ឈប់ការដូរពណ៌ប៊ូតុង និងបញ្ឈប់ការផ្ញើទិន្នន័យ
+        return false; 
     }
 
-    // ៣. បើបំពេញគ្រប់ហើយ ធ្វើឱ្យប៊ូតុងទៅជាពណ៌ប្រផេះ និងចុចលែងកើត
+    // ៣. បើបំពេញគ្រប់ហើយ ទើបអនុញ្ញាតឱ្យដូរពណ៌ប៊ូតុង និងផ្ញើទិន្នន័យ
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
-    // ៤. រៀបចំទិន្នន័យផ្ញើចេញ
     const formData = {
         date: new Date().toISOString(),
         goal: goal.value,
@@ -84,6 +86,28 @@ function sendData() {
         in: inVal.value,
         sold: sold.value
     };
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
+
+    fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors", 
+        cache: "no-cache",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+    })
+    .then(() => {
+        alert("✅ រក្សាទុកបានជោគជ័យ!");
+        document.getElementById("salesForm").reset();
+    })
+    .catch(error => {
+        alert("❌ មានបញ្ហា៖ " + error.message);
+    })
+    .finally(() => {
+        btn.innerText = "រក្សាទុក";
+        btn.disabled = false;
+    });
+}
 
     // ៥. ផ្ញើទៅកាន់ Google Sheets
     const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
@@ -112,3 +136,4 @@ function sendData() {
 
 </body>
 </html>
+
