@@ -47,7 +47,7 @@ function sendData() {
 
     // ១. ប្រមូលទិន្នន័យ
     const formData = {
-        date: new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' }),
+        date: new Date().toISOString(),
         goal: document.getElementById("goal").value,
         out: document.getElementById("out").value,
         in: document.getElementById("in").value,
@@ -82,6 +82,7 @@ function sendData() {
 
 </body>
 </html>
+
 
 
 
