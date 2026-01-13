@@ -10,27 +10,11 @@
         .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
         h2 { text-align: center; color: #333; }
         label { font-weight: bold; display: block; margin-top: 10px; }
-        input { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
         button:hover { background-color: #218838; }
-        
-        button:disabled {
-            background-color: #cccccc !important;
-            color: #666666 !important;
-            cursor: not-allowed;
-            border: 1px solid #999;
-        }
-
-        .report-btn {
-            background-color: #007bff;
-            margin-top: 10px;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-        }
+        button:disabled { background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed; }
+        .report-btn { background-color: #007bff; margin-top: 10px; text-decoration: none; display: block; text-align: center; color: white; padding: 10px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -38,50 +22,74 @@
 <div class="container">
     <h2>បញ្ចូលទិន្នន័យ</h2>
     <form id="salesForm">
-    <label>ជ្រើសរើសគោលដៅរក្សាទុក</label>
-    <select id="sheetName" style="width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px;">
-        <option value="Sheet1">Sheet ទី ១</option>
-        <option value="Sheet2">Sheet ទី ២</option>
-        <option value="Sheet3">Sheet ទី ៣</option>
-        <option value="Sheet4">Sheet ទី ៤</option>
-        <option value="Sheet5">Sheet ទី ៥</option>
+        <label>ជ្រើសរើសគោលដៅរក្សាទុក</label>
+        <select id="sheetName">
+            <option value="Sheet1">Sheet ទី ១</option>
+            <option value="Sheet2">Sheet ទី ២</option>
+            <option value="Sheet3">Sheet ទី ៣</option>
+            <option value="Sheet4">Sheet ទី ៤</option>
+            <option value="Sheet5">Sheet ទី ៥</option>
         </select>
 
-    <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
-    <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
-</form>
+        <label>គោលដៅចុងក្រោយ</label>
+        <input type="text" id="goal" placeholder="បញ្ចូលលេខ..." required>
+
+        <label>ចំនួនដឹកចេញ</label>
+        <input type="number" id="out" placeholder="0" required>
+
+        <label>ចំនួនដឹកចូល</label>
+        <input type="number" id="in" placeholder="0" required>
+
+        <label>លក់បាន</label>
+        <input type="number" id="sold" placeholder="0" required>
+
+        <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
+        <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
+    </form>
 </div>
 
 <script>
 function sendData() {
-    // ... ការចាប់យក Element ផ្សេងៗ ...
-    const sheetSelect = document.getElementById("sheetName").value; // ចាប់ឈ្មោះ Sheet
+    // ១. ចាប់យក Element
+    const goal = document.getElementById("goal");
+    const out = document.getElementById("out");
+    const inVal = document.getElementById("in");
+    const sold = document.getElementById("sold");
+    const sheetSelect = document.getElementById("sheetName");
+    const btn = document.getElementById("submitBtn");
 
-    // រៀបចំ formData
+    // ២. ពិនិត្យទិន្នន័យទទេ
+    if (!goal.value || !out.value || !inVal.value || !sold.value) {
+        alert("⚠️ សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
+        return;
+    }
+
+    // ៣. ប្តូរស្ថានភាពប៊ូតុង
+    btn.disabled = true;
+    btn.innerText = "កំពុងរក្សាទុក...";
+
+    // ៤. រៀបចំទិន្នន័យ
     const formData = {
-        sheetName: sheetSelect, // បញ្ជូនឈ្មោះ Sheet ទៅកាន់ Code.gs
+        sheetName: sheetSelect.value,
         date: new Date().toISOString(),
         goal: goal.value,
         out: out.value,
         in: inVal.value,
         sold: sold.value
     };
-    
-    // ... កូដ fetch បន្តទៅទៀត ...
-}
 
-    // ៤. ផ្ញើទៅ Google Sheets (URL របស់អ្នក)
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxKARpixOKcsRiXJnT80kPO0cBQbUt4i3RRsfVAtGjIvn51Amkdj_4kcHA89hkAfYCZ/exec"; 
+    // ៥. ផ្ញើទៅ Google Sheets (URL របស់អ្នក)
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxKARpixOKcsRiXJnT80kPO0cBQbUt4i3RRsfVAtGjIvn51Amkdj_4kcHA89hkAfYCZ/exec";
 
     fetch(scriptURL, {
         method: "POST",
-        mode: "no-cors", 
+        mode: "no-cors",
         cache: "no-cache",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
     })
     .then(() => {
-        alert("✅ រក្សាទុកបានជោគជ័យ!");
+        alert("✅ រក្សាទុកក្នុង " + sheetSelect.value + " បានជោគជ័យ!");
         document.getElementById("salesForm").reset();
     })
     .catch(error => {
@@ -96,7 +104,3 @@ function sendData() {
 
 </body>
 </html>
-
-
-
-
