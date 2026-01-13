@@ -41,7 +41,7 @@
 </div>
 
 <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
+  const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
 
     fetch(scriptURL)
     .then(res => res.json())
@@ -49,33 +49,29 @@
         const tableBody = document.getElementById("tableBody");
         let totalSold = 0;
 
-        // ប្រើ .slice(2) ដើម្បីចាប់យកចាប់ពីជួរទី ៣ ទៅ (ជួរទី១ គឺ index 0, ជួរទី២ គឺ index 1)
+        // ចាប់យកពីជួរទី ៣ ទៅ
         const filteredData = data.slice(2); 
 
-        // បញ្ច្រាសទិន្នន័យដែលបានកាត់រួច ដើម្បីឱ្យអាថ្មីនៅខាងលើ
         filteredData.reverse().forEach(row => {
             const tr = document.createElement("tr");
             
-            // កូដសម្រាប់រៀបចំថ្ងៃខែ (ដូចដែលយើងបានធ្វើពីមុន)
-           let displayDate = "មិនស្គាល់ថ្ងៃ";
-​​​​if (row[0]) {
-    const d = new Date(row[0]);
-    if (!isNaN(d)) {
-        // កំណត់យកឆ្នាំត្រឹម ២ ខ្ទង់ (2-digit)
-        const datePart = d.toLocaleDateString('km-KH', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit' // វានឹងបង្ហាញត្រឹម "26"
-        });
-        
-        const timePart = d.toLocaleTimeString('km-KH', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-
-        displayDate = datePart + " " + timePart;
-    }
-}
+            // កំណត់កាលបរិច្ឆេទឆ្នាំត្រឹម ២ ខ្ទង់
+            let displayDate = "មិនស្គាល់ថ្ងៃ";
+            if (row[0]) {
+                const d = new Date(row[0]);
+                if (!isNaN(d)) {
+                    const datePart = d.toLocaleDateString('km-KH', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                    });
+                    const timePart = d.toLocaleTimeString('km-KH', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    displayDate = datePart + " " + timePart;
+                }
+            }
 
             tr.innerHTML = `
                 <td>${displayDate}</td>
@@ -91,11 +87,15 @@
 
         document.getElementById("totalDisplay").innerText = "សរុប៖ " + totalSold.toLocaleString();
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("totalDisplay").innerText = "មានបញ្ហាក្នុងការទាញទិន្នន័យ!";
+    });
 </script>
 
 </body>
 </html>
+
 
 
 
