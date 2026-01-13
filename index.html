@@ -52,30 +52,24 @@
 
 <script>
 function sendData() {
-    // ១. ចាប់យកតម្លៃពី Input នីមួយៗ
-    const goal = document.getElementById("goal").value;
-    const out = document.getElementById("out").value;
-    const inVal = document.getElementById("in").value;
-    const sold = document.getElementById("sold").value;
+    const goal = document.getElementById("goal");
+    const out = document.getElementById("out");
+    const inVal = document.getElementById("in");
+    const sold = document.getElementById("sold");
+    const btn = document.querySelector("button");
 
-    // ២. ពិនិត្យលក្ខខណ្ឌ៖ ប្រសិនបើមានប្រអប់ណាមួយទទេ (Empty)
-    if (goal === "" || out === "" || inVal === "" || sold === "") {
-        alert("សូមបំពេញទិន្នន័យក្នុងប្រអប់ឱ្យបានគ្រប់រន្ធសិន!"); // បង្ហាញសារព្រមាន
-        return; // បញ្ឈប់ការធ្វើការភ្លាមៗ (មិនឱ្យផ្ញើទៅ Sheets)
+    // ពិនិត្យថាមានប្រអប់ទទេឬអត់
+    if (!goal.value || !out.value || !inVal.value || !sold.value) {
+        alert("សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
+        return; // បញ្ឈប់ការផ្ញើ
     }
 
-    // ប្រសិនបើបំពេញគ្រប់ហើយ ទើបកូដខាងក្រោមនេះដំណើរការ
-    const btn = document.querySelector("button");
-    btn.innerText = "កំពុងរក្សាទុក...";
+    // បើបំពេញគ្រប់ហើយ ធ្វើឱ្យប៊ូតុងទៅជាពណ៌ប្រផេះ និងចុចលែងកើត
     btn.disabled = true;
+    btn.innerText = "កំពុងរក្សាទុក...";
 
-    const formData = {
-        date: new Date().toISOString(),
-        goal: goal,
-        out: out,
-        in: inVal,
-        sold: sold
-    };
+    // កូដ fetch ផ្ញើទៅ Google Sheets របស់អ្នក...
+}
 
     // ... កូដ fetch ផ្ញើទៅកាន់ Google Sheets របស់អ្នក ...
 }
@@ -106,6 +100,7 @@ function sendData() {
 
 </body>
 </html>
+
 
 
 
