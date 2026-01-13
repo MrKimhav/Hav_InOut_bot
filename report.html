@@ -57,13 +57,25 @@
             const tr = document.createElement("tr");
             
             // កូដសម្រាប់រៀបចំថ្ងៃខែ (ដូចដែលយើងបានធ្វើពីមុន)
-            let displayDate = "មិនស្គាល់ថ្ងៃ";
-            if (row[0]) {
-                const d = new Date(row[0]);
-                if (!isNaN(d)) {
-                    displayDate = d.toLocaleDateString('km-KH') + " " + d.toLocaleTimeString('km-KH', {hour: '2-digit', minute:'2-digit'});
-                }
-            }
+           let displayDate = "មិនស្គាល់ថ្ងៃ";
+​​​​if (row[0]) {
+    const d = new Date(row[0]);
+    if (!isNaN(d)) {
+        // កំណត់យកឆ្នាំត្រឹម ២ ខ្ទង់ (2-digit)
+        const datePart = d.toLocaleDateString('km-KH', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit' // វានឹងបង្ហាញត្រឹម "26"
+        });
+        
+        const timePart = d.toLocaleTimeString('km-KH', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        displayDate = datePart + " " + timePart;
+    }
+}
 
             tr.innerHTML = `
                 <td>${displayDate}</td>
@@ -84,6 +96,7 @@
 
 </body>
 </html>
+
 
 
 
