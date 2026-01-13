@@ -61,24 +61,26 @@
             if (row[0]) {
                 const d = new Date(row[0]);
                 if (!isNaN(d)) {
+                    // បង្ហាញថ្ងៃខែឆ្នាំ (ឆ្នាំ ២ ខ្ទង់)
                     displayDate = d.toLocaleDateString('km-KH', {
                         day: '2-digit', month: '2-digit', year: '2-digit'
                     });
+                    // បង្ហាញម៉ោង និងនាទី
                     displayTime = d.toLocaleTimeString('km-KH', {
                         hour: '2-digit', minute: '2-digit'
                     });
                 }
             }
 
-            // រៀបចំការបង្ហាញ៖ ទិន្នន័យនៅខាងលើ ម៉ោងនៅខាងក្រោម (អក្សរតូចពណ៌ប្រផេះ)
+            // រៀបចំការបង្ហាញ Column ទី ៤ (row[3]) ឱ្យមានម៉ោងនៅជាមួយ
             tr.innerHTML = `
                 <td>${displayDate}</td>
                 <td>${row[1] || 0}</td>
+                <td>${row[2] || 0}</td>
                 <td>
-                    ${row[2] || 0} <br>
+                    ${row[3] || 0} <br>
                     <small style="color: #666; font-size: 11px;">(${displayTime})</small>
                 </td>
-                <td>${row[3] || 0}</td>
                 <td>${row[4] || 0}</td>
             `;
             tableBody.appendChild(tr);
@@ -96,6 +98,7 @@
 
 </body>
 </html>
+
 
 
 
