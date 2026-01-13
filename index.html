@@ -38,21 +38,18 @@
 <div class="container">
     <h2>បញ្ចូលទិន្នន័យ</h2>
     <form id="salesForm">
-        <label>គោលដៅចុងក្រោយ</label>
-        <input type="text" id="goal" placeholder="បញ្ចូលឈ្មោះទីតាំង" required>
-        
-        <label>ចំនួនដឹកចេញ</label>
-        <input type="number" id="out" placeholder="បញ្ចូលលេខ..." required>
-        
-        <label>ចំនួនដឹកចូល</label>
-        <input type="number" id="in" placeholder="បញ្ចូលលេខ..." required>
-        
-        <label>លក់បាន</label>
-        <input type="number" id="sold" placeholder="បញ្ចូលលេខ..." required>
-        
-        <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
-        <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
-    </form>
+    <label>ជ្រើសរើសគោលដៅរក្សាទុក</label>
+    <select id="sheetName" style="width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px;">
+        <option value="Sheet1">Sheet ទី ១</option>
+        <option value="Sheet2">Sheet ទី ២</option>
+        <option value="Sheet3">Sheet ទី ៣</option>
+        <option value="Sheet4">Sheet ទី ៤</option>
+        <option value="Sheet5">Sheet ទី ៥</option>
+        </select>
+
+    <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
+    <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
+</form>
 </div>
 
 <script>
@@ -108,5 +105,6 @@ function sendData() {
 
 </body>
 </html>
+
 
 
