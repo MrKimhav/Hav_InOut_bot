@@ -52,33 +52,35 @@
         // ចាប់យកពីជួរទី ៣ ទៅ
         const filteredData = data.slice(2); 
 
-       filteredData.reverse().forEach(row => {
+      filteredData.reverse().forEach(row => {
             const tr = document.createElement("tr");
             
             let displayDate = "";
-            let displayTime = ""; // បង្កើត variable សម្រាប់ម៉ោង
+            let displayTime = ""; 
 
             if (row[0]) {
                 const d = new Date(row[0]);
                 if (!isNaN(d)) {
-                    // ១. ចាប់យកថ្ងៃខែឆ្នាំ (សម្រាប់ Column ទី១)
                     displayDate = d.toLocaleDateString('km-KH', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: '2-digit'
+                        day: '2-digit', month: '2-digit', year: '2-digit'
                     });
-                    
-                    // ២. ចាប់យកម៉ោង (សម្រាប់ Column ទី៣)
                     displayTime = d.toLocaleTimeString('km-KH', {
-                        hour: '2-digit',
-                        minute: '2-digit'
+                        hour: '2-digit', minute: '2-digit'
                     });
                 }
             }
 
-            // រៀបចំជួរឈរ (Columns) ឡើងវិញ
+            // រៀបចំការបង្ហាញ៖ ទិន្នន័យនៅខាងលើ ម៉ោងនៅខាងក្រោម (អក្សរតូចពណ៌ប្រផេះ)
             tr.innerHTML = `
-                <td>${displayDate}</td>      <td>${row[1] || 0}</td>       <td>${displayTime}</td>      <td>${row[3] || 0}</td>       <td>${row[4] || 0}</td>       `;
+                <td>${displayDate}</td>
+                <td>${row[1] || 0}</td>
+                <td>
+                    ${row[2] || 0} <br>
+                    <small style="color: #666; font-size: 11px;">(${displayTime})</small>
+                </td>
+                <td>${row[3] || 0}</td>
+                <td>${row[4] || 0}</td>
+            `;
             tableBody.appendChild(tr);
             
             totalSold += parseFloat(row[4]) || 0;
@@ -94,6 +96,7 @@
 
 </body>
 </html>
+
 
 
 
