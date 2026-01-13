@@ -11,6 +11,17 @@
         input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
         button:hover { background-color: #218838; }
+        button:disabled {
+            background-color: #cccccc !important; /* ប្តូរទៅពណ៌ប្រផេះ */
+            color: #666666 !important;
+            cursor: not-allowed; /* ប្តូររូបរាង Mouse ទៅជាសញ្ញាហាមឃាត់ */
+            border: 1px solid #999;
+        }
+
+        /* បន្ថែមស្ទីលពេលប្រអប់មានកំហុស (Optional) */
+        .error-border {
+            border: 2px solid red !important;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +106,7 @@ function sendData() {
 
 </body>
 </html>
+
 
 
 
