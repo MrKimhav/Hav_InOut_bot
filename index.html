@@ -1,78 +1,79 @@
 <!DOCTYPE html>
-<html lang="km">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sale Tracking App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 16px; }
-    input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-    button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 8px; color: white; cursor: pointer; }
-    .btn-send { background: #2AABEE; }
-    .btn-report { background: #33c659; }
-  </style>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>បញ្ចូលទិន្នន័យលក់</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+    </style>
 </head>
 <body>
-  <h2>បញ្ចូលទិន្នន័យប្រចាំថ្ងៃ</h2>
-  <p id="user">សួស្តី!</p>
 
-  <input type="text" id="goal" placeholder="គោលដៅ">
-  <input type="number" id="out" placeholder="ចេញ">
-  <input type="number" id="in" placeholder="ចូល">
-  <input type="number" id="sold" placeholder="លក់បាន">
+<div class="container">
+    <h2>បញ្ចូលទិន្នន័យលក់</h2>
+    <form id="salesForm">
+        <label>គោលដៅ (Goal):</label>
+        <input type="number" id="goal" placeholder="0" required>
+        
+        <label>ចំណាយ (Out):</label>
+        <input type="number" id="out" placeholder="0" required>
+        
+        <label>ចំណូល (In):</label>
+        <input type="number" id="in" placeholder="0" required>
+        
+        <label>លក់បាន (Sold):</label>
+        <input type="number" id="sold" placeholder="0" required>
+        
+        <button type="button" onclick="sendData()">រក្សាទុក</button>
+    </form>
+</div>
 
+<script>
+function sendData() {
+    const btn = document.querySelector("button");
+    btn.innerText = "កំពុងរក្សាទុក...";
+    btn.disabled = true;
 
- <form id="orderForm">
-   <button type="button" onclick="sendData()">រក្សាទុក</button>
-</form>
-  <button class="btn-report" onclick="window.location.href='report.html'">មើលរបាយការណ៍</button>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-
-    // បង្ហាញឈ្មោះអ្នកប្រើ
-    if (tg.initDataUnsafe?.user) {
-      document.getElementById("user").innerText = "សួស្តី " + tg.initDataUnsafe.user.first_name;
-    }
-
-    async function sendData() {
-      // ១. ទាញយកតម្លៃពី Input នីមួយៗ
-     function sendData() {
+    // ១. ប្រមូលទិន្នន័យ
     const formData = {
-        date: new Date().toISOString(),
+        date: new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' }),
         goal: document.getElementById("goal").value,
         out: document.getElementById("out").value,
         in: document.getElementById("in").value,
         sold: document.getElementById("sold").value,
         debt: "", 
-        pay: ""   
+        pay: ""
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec", {
+    // ២. ប្តូរ URL ខាងក្រោមនេះទៅជា Link "Deploy" របស់អ្នក (បញ្ចប់ដោយ /exec)
+    const scriptURL = "ដាក់_WEB_APP_URL_របស់អ្នក_នៅទីនេះ"; 
+
+    fetch(scriptURL, {
         method: "POST",
+        mode: "no-cors", // សំខាន់៖ ប្រើ no-cors ដើម្បីកុំឱ្យជាប់បញ្ហា Security ជាមួយ Google
+        cache: "no-cache",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
     })
-    .then(res => res.text())
-    .then(data => {
+    .then(() => {
         alert("រក្សាទុកបានជោគជ័យ!");
-
-        // --- បន្ថែមចំណុចនេះ ដើម្បីលុបទិន្នន័យពីប្រអប់បញ្ចូល ---
-        document.getElementById("goal").value = "";
-        document.getElementById("out").value = "";
-        document.getElementById("in").value = "";
-        document.getElementById("sold").value = "";
-        // -------------------------------------------
+        document.getElementById("salesForm").reset(); // លុបទិន្នន័យក្នុងប្រអប់ទាំងអស់
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+        alert("មានបញ្ហា៖ " + error.message);
+    })
+    .finally(() => {
+        btn.innerText = "រក្សាទុក";
+        btn.disabled = false;
+    });
 }
-        tg.showAlert("មានកំហុស៖ " + error.message);
-        tg.MainButton.hide();
-      }
-    }
-  </script>
+</script>
+
 </body>
-
 </html>
-
