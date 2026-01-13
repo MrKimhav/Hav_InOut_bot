@@ -51,19 +51,29 @@
 
         // បញ្ច្រាសទិន្នន័យដើម្បីឱ្យទិន្នន័យថ្មីបំផុតនៅខាងលើ
         data.reverse().forEach(row => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${row[0] || ''}</td>
-                <td>${row[1] || 0}</td>
-                <td>${row[2] || 0}</td>
-                <td>${row[3] || 0}</td>
-                <td>${row[4] || 0}</td>
-            `;
-            tableBody.appendChild(tr);
-            
-            // បូកសរុបតម្លៃលក់បាន
-            totalSold += parseFloat(row[4]) || 0;
-        });
+    const tr = document.createElement("tr");
+    
+    // បង្កើតការបង្ហាញកាលបរិច្ឆេទឱ្យស្អាត
+    let displayDate = "មិនស្គាល់ថ្ងៃ";
+    if (row[0]) {
+        const d = new Date(row[0]);
+        if (!isNaN(d)) {
+            // កំណត់បង្ហាញជា៖ ថ្ងៃ/ខែ/ឆ្នាំ ម៉ោង:នាទី
+            displayDate = d.toLocaleDateString('km-KH') + " " + d.toLocaleTimeString('km-KH', {hour: '2-digit', minute:'2-digit'});
+        }
+    }
+
+    tr.innerHTML = `
+        <td>${displayDate}</td>
+        <td>${row[1] || 0}</td>
+        <td>${row[2] || 0}</td>
+        <td>${row[3] || 0}</td>
+        <td>${row[4] || 0}</td>
+    `;
+    tableBody.appendChild(tr);
+    
+    totalSold += parseFloat(row[4]) || 0;
+});
 
         document.getElementById("totalDisplay").innerText = "សរុបការលក់៖ " + totalSold.toLocaleString();
     })
@@ -72,3 +82,4 @@
 
 </body>
 </html>
+
