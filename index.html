@@ -48,12 +48,11 @@ function sendData() {
     // ១. ប្រមូលទិន្នន័យ
     const formData = {
         date: new Date().toISOString(),
-        goal: document.getElementById("goal").value,
-        out: document.getElementById("out").value,
-        in: document.getElementById("in").value,
-        sold: document.getElementById("sold").value,
-        debt: "", 
-        pay: ""
+        // ប្រសិនបើប្រអប់ទទេ វានឹងដាក់ពាក្យថា "Pending" ជំនួសវិញ
+        goal: document.getElementById("goal").value || "Pending",
+        out: document.getElementById("out").value || "Pending",
+        in: document.getElementById("in").value || "Pending",
+        sold: document.getElementById("sold").value || "Pending"
     };
 
     // ២. ប្តូរ URL ខាងក្រោមនេះទៅជា Link "Deploy" របស់អ្នក (បញ្ចប់ដោយ /exec)
@@ -82,6 +81,7 @@ function sendData() {
 
 </body>
 </html>
+
 
 
 
