@@ -7,20 +7,30 @@
     <title>បញ្ចូលទិន្នន័យ</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h2 { text-align: center; color: #333; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
         button:hover { background-color: #218838; }
+        
+        /* ស្ទីលសម្រាប់ប៊ូតុងពេលចុចមិនកើត */
         button:disabled {
-            background-color: #cccccc !important; /* ប្តូរទៅពណ៌ប្រផេះ */
+            background-color: #cccccc !important;
             color: #666666 !important;
-            cursor: not-allowed; /* ប្តូររូបរាង Mouse ទៅជាសញ្ញាហាមឃាត់ */
+            cursor: not-allowed;
             border: 1px solid #999;
         }
 
-        /* បន្ថែមស្ទីលពេលប្រអប់មានកំហុស (Optional) */
-        .error-border {
-            border: 2px solid red !important;
+        .report-btn {
+            background-color: #007bff;
+            margin-top: 10px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -41,42 +51,46 @@
         <label>លក់បាន</label>
         <input type="number" id="sold" placeholder="0" required>
         
-        <button type="button" onclick="sendData()">រក្សាទុក</button>
-        <button type="button" 
-        onclick="window.location.href='report.html'" 
-        style="background-color: #007bff; margin-top: 10px;">
-    📊 មើលរបាយការណ៍
-</button>
+        <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
+        
+        <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
     </form>
 </div>
 
 <script>
 function sendData() {
+    // ១. ចាប់យក Element
     const goal = document.getElementById("goal");
     const out = document.getElementById("out");
     const inVal = document.getElementById("in");
     const sold = document.getElementById("sold");
-    const btn = document.querySelector("button");
+    const btn = document.getElementById("submitBtn");
 
-    // ពិនិត្យថាមានប្រអប់ទទេឬអត់
+    // ២. ពិនិត្យថាមានប្រអប់ទទេឬអត់ (Validation)
     if (!goal.value || !out.value || !inVal.value || !sold.value) {
         alert("សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
-        return; // បញ្ឈប់ការផ្ញើ
+        return; 
     }
 
-    // បើបំពេញគ្រប់ហើយ ធ្វើឱ្យប៊ូតុងទៅជាពណ៌ប្រផេះ និងចុចលែងកើត
+    // ៣. បើបំពេញគ្រប់ហើយ ធ្វើឱ្យប៊ូតុងទៅជាពណ៌ប្រផេះ និងចុចលែងកើត
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
-    // ... កូដ fetch ផ្ញើទៅកាន់ Google Sheets របស់អ្នក ...
-}
+    // ៤. រៀបចំទិន្នន័យផ្ញើចេញ
+    const formData = {
+        date: new Date().toISOString(),
+        goal: goal.value,
+        out: out.value,
+        in: inVal.value,
+        sold: sold.value
+    };
 
-    // ២. ប្តូរ URL ខាងក្រោមនេះទៅជា Link "Deploy" របស់អ្នក (បញ្ចប់ដោយ /exec)
+    // ៥. ផ្ញើទៅកាន់ Google Sheets
     const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
 
     fetch(scriptURL, {
         method: "POST",
-        mode: "no-cors", // សំខាន់៖ ប្រើ no-cors ដើម្បីកុំឱ្យជាប់បញ្ហា Security ជាមួយ Google
+        mode: "no-cors", 
         cache: "no-cache",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -89,6 +103,7 @@ function sendData() {
         alert("មានបញ្ហា៖ " + error.message);
     })
     .finally(() => {
+        // ប្តូរប៊ូតុងមកធម្មតាវិញក្រោយផ្ញើរួច
         btn.innerText = "រក្សាទុក";
         btn.disabled = false;
     });
@@ -97,14 +112,3 @@ function sendData() {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
