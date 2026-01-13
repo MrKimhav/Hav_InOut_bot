@@ -37,34 +37,39 @@
 
     async function sendData() {
       // ១. ទាញយកតម្លៃពី Input នីមួយៗ
-      const formData = {
+     function sendData() {
+    const formData = {
         date: new Date().toISOString(),
         goal: document.getElementById("goal").value,
         out: document.getElementById("out").value,
         in: document.getElementById("in").value,
         sold: document.getElementById("sold").value,
-        debt: "",
-        pay: ""
-      };
+        debt: "", 
+        pay: ""   
+    };
 
-      // ២. ដាក់ URL របស់អ្នកនៅទីនេះ
-      const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
+    fetch("https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec", {
+        method: "POST",
+        body: JSON.stringify(formData)
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert("រក្សាទុកបានជោគជ័យ!");
 
-      tg.MainButton.setText("កំពុងបញ្ជូន...").show();
-
-      try {
-        await fetch(scriptURL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify(formData)
-        });
-        tg.showAlert("រក្សាទុកបានជោគជ័យ! ✅");
-        tg.MainButton.hide();
-      } catch (error) {
+        // --- បន្ថែមចំណុចនេះ ដើម្បីលុបទិន្នន័យពីប្រអប់បញ្ចូល ---
+        document.getElementById("goal").value = "";
+        document.getElementById("out").value = "";
+        document.getElementById("in").value = "";
+        document.getElementById("sold").value = "";
+        // -------------------------------------------
+    })
+    .catch(error => console.log(error));
+}
         tg.showAlert("មានកំហុស៖ " + error.message);
         tg.MainButton.hide();
       }
     }
   </script>
 </body>
+
 </html>
