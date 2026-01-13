@@ -49,39 +49,42 @@
         const tableBody = document.getElementById("tableBody");
         let totalSold = 0;
 
-        // បញ្ច្រាសទិន្នន័យដើម្បីឱ្យទិន្នន័យថ្មីបំផុតនៅខាងលើ
-        data.reverse().forEach(row => {
-    const tr = document.createElement("tr");
-    
-    // បង្កើតការបង្ហាញកាលបរិច្ឆេទឱ្យស្អាត
-    let displayDate = "មិនស្គាល់ថ្ងៃ";
-    if (row[0]) {
-        const d = new Date(row[0]);
-        if (!isNaN(d)) {
-            // កំណត់បង្ហាញជា៖ ថ្ងៃ/ខែ/ឆ្នាំ ម៉ោង:នាទី
-            displayDate = d.toLocaleDateString('km-KH') + " " + d.toLocaleTimeString('km-KH', {hour: '2-digit', minute:'2-digit'});
-        }
-    }
+        // ប្រើ .slice(2) ដើម្បីចាប់យកចាប់ពីជួរទី ៣ ទៅ (ជួរទី១ គឺ index 0, ជួរទី២ គឺ index 1)
+        const filteredData = data.slice(2); 
 
-    tr.innerHTML = `
-        <td>${displayDate}</td>
-        <td>${row[1] || 0}</td>
-        <td>${row[2] || 0}</td>
-        <td>${row[3] || 0}</td>
-        <td>${row[4] || 0}</td>
-    `;
-    tableBody.appendChild(tr);
-    
-    totalSold += parseFloat(row[4]) || 0;
-});
+        // បញ្ច្រាសទិន្នន័យដែលបានកាត់រួច ដើម្បីឱ្យអាថ្មីនៅខាងលើ
+        filteredData.reverse().forEach(row => {
+            const tr = document.createElement("tr");
+            
+            // កូដសម្រាប់រៀបចំថ្ងៃខែ (ដូចដែលយើងបានធ្វើពីមុន)
+            let displayDate = "មិនស្គាល់ថ្ងៃ";
+            if (row[0]) {
+                const d = new Date(row[0]);
+                if (!isNaN(d)) {
+                    displayDate = d.toLocaleDateString('km-KH') + " " + d.toLocaleTimeString('km-KH', {hour: '2-digit', minute:'2-digit'});
+                }
+            }
 
-        document.getElementById("totalDisplay").innerText = "សរុបការលក់៖ " + totalSold.toLocaleString();
+            tr.innerHTML = `
+                <td>${displayDate}</td>
+                <td>${row[1] || 0}</td>
+                <td>${row[2] || 0}</td>
+                <td>${row[3] || 0}</td>
+                <td>${row[4] || 0}</td>
+            `;
+            tableBody.appendChild(tr);
+            
+            totalSold += parseFloat(row[4]) || 0;
+        });
+
+        document.getElementById("totalDisplay").innerText = "សរុប៖ " + totalSold.toLocaleString();
     })
     .catch(error => console.error('Error:', error));
 </script>
 
 </body>
 </html>
+
 
 
 
