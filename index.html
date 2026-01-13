@@ -14,7 +14,6 @@
         button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
         button:hover { background-color: #218838; }
         
-        /* ស្ទីលសម្រាប់ប៊ូតុងពេលចុចមិនកើត */
         button:disabled {
             background-color: #cccccc !important;
             color: #666666 !important;
@@ -40,10 +39,10 @@
     <h2>បញ្ចូលទិន្នន័យ</h2>
     <form id="salesForm">
         <label>គោលដៅចុងក្រោយ</label>
-        <input type="text" id="goal" placeholder="" required>
+        <input type="text" id="goal" placeholder="បញ្ចូលលេខ..." required>
         
         <label>ចំនួនដឹកចេញ</label>
-        <input type="number" id="out" placeholder="0" required>
+        <input type="number" id="out" placeholder="បញ្ចូលលេខ..." required>
         
         <label>ចំនួនដឹកចូល</label>
         <input type="number" id="in" placeholder="0" required>
@@ -52,33 +51,29 @@
         <input type="number" id="sold" placeholder="0" required>
         
         <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុក</button>
-        
         <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍</a>
     </form>
 </div>
 
 <script>
 function sendData() {
-    // ១. ចាប់យក Element ឱ្យបានច្បាស់លាស់
     const goal = document.getElementById("goal");
     const out = document.getElementById("out");
     const inVal = document.getElementById("in");
     const sold = document.getElementById("sold");
     const btn = document.getElementById("submitBtn");
 
-    // ២. ពិនិត្យលក្ខខណ្ឌ (Validation)
-    // ប្រសិនបើមានប្រអប់ណាមួយទទេ ឬស្មើនឹង "0" (ក្នុងករណីអ្នកចង់ឱ្យបំពេញលេខលើសពី 0)
-    if (goal.value.trim() === "" || out.value.trim() === "" || inVal.value.trim() === "" || sold.value.trim() === "") {
-        alert("⚠️ សូមបំពេញទិន្នន័យក្នុងប្រអប់ឱ្យបានគ្រប់រន្ធសិន មុននឹងចុចរក្សាទុក!");
-        
-        // បញ្ឈប់ការដូរពណ៌ប៊ូតុង និងបញ្ឈប់ការផ្ញើទិន្នន័យ
-        return false; 
+    // ១. ពិនិត្យទិន្នន័យទទេ
+    if (!goal.value.trim() || !out.value.trim() || !inVal.value.trim() || !sold.value.trim()) {
+        alert("⚠️ សូមបំពេញទិន្នន័យឱ្យគ្រប់សិន!");
+        return; 
     }
 
-    // ៣. បើបំពេញគ្រប់ហើយ ទើបអនុញ្ញាតឱ្យដូរពណ៌ប៊ូតុង និងផ្ញើទិន្នន័យ
+    // ២. ប្តូរស្ថានភាពប៊ូតុង
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
+    // ៣. រៀបចំទិន្នន័យ
     const formData = {
         date: new Date().toISOString(),
         goal: goal.value,
@@ -87,6 +82,7 @@ function sendData() {
         sold: sold.value
     };
 
+    // ៤. ផ្ញើទៅ Google Sheets (URL របស់អ្នក)
     const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
 
     fetch(scriptURL, {
@@ -108,33 +104,7 @@ function sendData() {
         btn.disabled = false;
     });
 }
-
-    // ៥. ផ្ញើទៅកាន់ Google Sheets
-    const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
-
-    fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors", 
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-    })
-    .then(() => {
-        alert("រក្សាទុកបានជោគជ័យ!");
-        document.getElementById("salesForm").reset(); // លុបទិន្នន័យក្នុងប្រអប់ទាំងអស់
-    })
-    .catch(error => {
-        alert("មានបញ្ហា៖ " + error.message);
-    })
-    .finally(() => {
-        // ប្តូរប៊ូតុងមកធម្មតាវិញក្រោយផ្ញើរួច
-        btn.innerText = "រក្សាទុក";
-        btn.disabled = false;
-    });
-}
 </script>
 
 </body>
 </html>
-
-
