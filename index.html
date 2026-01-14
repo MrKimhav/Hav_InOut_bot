@@ -50,7 +50,7 @@
         <div id="sectionIn" style="display: none;">
             <label>ចំនួនដឹកចូល</label>
             <input type="number" id="in" placeholder="0">
-            <label>លក់បាន ($)</label>
+            <label>លក់បាន</label>
             <input type="number" id="sold" placeholder="0">
         </div>
 
@@ -73,17 +73,26 @@ function sendData() {
     const btn = document.getElementById("submitBtn");
 
     // លក្ខខណ្ឌពិនិត្យ
-    if (!goal) { alert("⚠️ សូមបំពេញគោលដៅ!"); return; }
-
-    let outVal = 0, inVal = 0, soldVal = 0;
     if (opType === "outType") {
-        outVal = document.getElementById("out").value;
-        if (!outVal) { alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!"); return; }
+        if (goal === "" || outVal === "") {
+            alert("⚠️ សូមបំពេញគោលដៅ និង ចំនួនដឹកចេញ!");
+            return;
+        }
     } else {
-        inVal = document.getElementById("in").value;
-        soldVal = document.getElementById("sold").value;
-        if (!inVal || !soldVal) { alert("⚠️ សូមបំពេញចំនួនដឹកចូល និងលក់បាន!"); return; }
+        // លុប !soldVal ចេញពីលក្ខខណ្ឌ if ខាងក្រោមនេះ
+        if (inVal === "") { 
+            alert("⚠️ សូមបំពេញចំនួនដឹកចូល!");
+            return;
+        }
     }
+
+    // ... កូដបញ្ជូនទិន្នន័យ ...
+    const formData = {
+        // ...
+        in: inVal || 0,
+        sold: soldVal || 0  // បើទុកទទេ វានឹងយកលេខ 0 ទៅរក្សាទុកក្នុង Sheet
+    };
+}
 
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
@@ -120,6 +129,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
