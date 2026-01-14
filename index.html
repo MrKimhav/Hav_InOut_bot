@@ -77,21 +77,29 @@ function toggleFields() {
 // Function សម្រាប់បន្លឺសំឡេង "Ding" ពេលជោគជ័យ
 function playSuccessSound() {
     const context = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = context.createOscillator();
-    const gainNode = context.createGain();
+    
+    // បង្កើតសំឡេង Ting លើកទី១
+    function playNote(delay, freq) {
+        const osc = context.createOscillator();
+        const gain = context.createGain();
 
-    oscillator.type = 'sine'; // សំឡេងបែបស្រទន់
-    oscillator.frequency.setValueAtTime(523.25, context.currentTime); // ណោត C5
-    oscillator.frequency.exponentialRampToValueAtTime(1046.50, context.currentTime + 0.5); // ឡើងទៅ C6
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, context.currentTime + delay);
 
-    gainNode.gain.setValueAtTime(0.1, context.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+        gain.gain.setValueAtTime(0, context.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(0.2, context.currentTime + delay + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + 0.3);
 
-    oscillator.connect(gainNode);
-    gainNode.connect(context.destination);
+        osc.connect(gain);
+        gain.connect(context.destination);
 
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.5);
+        osc.start(context.currentTime + delay);
+        osc.stop(context.currentTime + delay + 0.3);
+    }
+
+    // លេងសំឡេង ២ ដង (Ting-Ting)
+    playNote(0, 880);      // សំឡេងទី១ (ខ្ពស់ល្មម)
+    playNote(0.15, 1046);  // សំឡេងទី២ (ខ្ពស់ជាងមុនបន្តិច និងបន្ទាប់គ្នា)
 }
 function sendData() {
     const staffName = document.getElementById("staffName").value;
@@ -159,6 +167,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
