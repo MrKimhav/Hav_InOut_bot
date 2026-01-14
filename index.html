@@ -91,6 +91,27 @@
 </div>
 
 <script>
+    // កំណត់លេខសម្ងាត់សម្រាប់បុគ្គលិកម្នាក់ៗ
+const userCredentials = {
+    "A": "1234", // លេខសម្ងាត់បុគ្គលិក A
+    "B": "5678"  // លេខសម្ងាត់បុគ្គលិក B
+};
+
+function checkLogin() {
+    const user = document.getElementById("userLogin").value;
+    const pin = document.getElementById("pinCode").value;
+
+    if (userCredentials[user] === pin) {
+        // បើត្រូវ លាក់ Login បង្ហាញ Form
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("mainForm").style.display = "block";
+        
+        // កំណត់ឈ្មោះបុគ្គលិកក្នុង Form អូតូតាមការ Login
+        document.getElementById("staffName").value = user;
+    } else {
+        alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវទេ!");
+    }
+}
 // បន្ថែម Function toggleFields ដែលខ្វះ
 function toggleFields() {
     const opType = document.querySelector('input[name="opType"]:checked').value;
@@ -198,6 +219,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
