@@ -30,7 +30,7 @@
         </select>
 
         <label>គោលដៅចុងក្រោយ</label>
-        <input type="text" id="goal" placeholder="បញ្ចូលឈ្មោះគោលដៅ..." required>
+        <input type="text" id="goal" placeholder="បញ្ចូលឈ្មោះគោលដៅ...">
 
         <label>ប្រភេទប្រតិបត្តិការ</label>
         <div class="radio-group">
@@ -60,31 +60,42 @@
 </div>
 
 <script>
+// បន្ថែម Function toggleFields ដែលខ្វះ
+function toggleFields() {
+    const opType = document.querySelector('input[name="opType"]:checked').value;
+    const sectionOut = document.getElementById("sectionOut");
+    const sectionIn = document.getElementById("sectionIn");
+
+    if (opType === "outType") {
+        sectionOut.style.display = "block";
+        sectionIn.style.display = "none";
+    } else {
+        sectionOut.style.display = "none";
+        sectionIn.style.display = "block";
+    }
+}
+
 function sendData() {
     const staffName = document.getElementById("staffName").value;
     const goal = document.getElementById("goal").value.trim();
     const opType = document.querySelector('input[name="opType"]:checked').value;
     const btn = document.getElementById("submitBtn");
 
-    // ១. ទាញតម្លៃពី Input និងប្រកាសអថេរឱ្យបានច្បាស់លាស់
     const outVal = document.getElementById("out").value;
     const inVal = document.getElementById("in").value;
     const soldVal = document.getElementById("sold").value;
 
-    // ២. ពិនិត្យលក្ខខណ្ឌ Goal
     if (goal === "") {
         alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!");
         return;
     }
 
-    // ៣. ពិនិត្យលក្ខខណ្ឌតាមប្រភេទប្រតិបត្តិការ
     if (opType === "outType") {
         if (outVal === "") {
             alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!");
             return;
         }
     } else {
-        // ពិនិត្យតែ In ប៉ុណ្ណោះ ចំណែក Sold ទទេក៏មិនអីដែរ
         if (inVal === "") {
             alert("⚠️ សូមបំពេញចំនួនដឹកចូល!");
             return;
@@ -94,7 +105,6 @@ function sendData() {
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
-    // ៤. រៀបចំទិន្នន័យ (ប្រើឈ្មោះអថេរដែលបានប្រកាសខាងលើ)
     const formData = {
         sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
         staffName: staffName,
@@ -128,9 +138,3 @@ function sendData() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
