@@ -21,6 +21,20 @@
 
 <div class="container">
     <h2>📝 បញ្ចូលទិន្នន័យ</h2>
+    <div id="loginSection" class="container">
+    <h2>🔐 សូមចូលប្រើប្រាស់</h2>
+    <label>ឈ្មោះអ្នកប្រើប្រាស់</label>
+    <select id="userLogin">
+        <option value="A">បុគ្គលិក A</option>
+        <option value="B">បុគ្គលិក B</option>
+    </select>
+    <label>លេខសម្ងាត់ (PIN)</label>
+    <input type="password" id="pinCode" placeholder="បញ្ចូលលេខសម្ងាត់ ៤ ខ្ទង់">
+    <button type="button" onclick="checkLogin()">ចូលប្រើប្រាស់</button>
+</div>
+
+<div id="mainForm" style="display: none;">
+    </div>
     <form id="dataForm">
         <label>ជ្រើសរើសឈ្មោះបុគ្គលិក</label>
         <select id="staffName">
@@ -184,6 +198,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
