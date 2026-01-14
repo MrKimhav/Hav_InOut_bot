@@ -66,12 +66,12 @@ function sendData() {
     const opType = document.querySelector('input[name="opType"]:checked').value;
     const btn = document.getElementById("submitBtn");
 
-    // ១. ទាញតម្លៃពី Input ទាំងអស់
+    // ១. ទាញតម្លៃពី Input និងប្រកាសអថេរឱ្យបានច្បាស់លាស់
     const outVal = document.getElementById("out").value;
     const inVal = document.getElementById("in").value;
     const soldVal = document.getElementById("sold").value;
 
-    // ២. ពិនិត្យលក្ខខណ្ឌ Goal (ត្រូវតែមានជានិច្ច)
+    // ២. ពិនិត្យលក្ខខណ្ឌ Goal
     if (goal === "") {
         alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!");
         return;
@@ -79,13 +79,12 @@ function sendData() {
 
     // ៣. ពិនិត្យលក្ខខណ្ឌតាមប្រភេទប្រតិបត្តិការ
     if (opType === "outType") {
-        // បើដឹកចេញ៖ ត្រូវតែមាន Goal និង Out
         if (outVal === "") {
             alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!");
             return;
         }
     } else {
-        // បើដឹកចូល៖ ត្រូវតែមានតែ In ប៉ុណ្ណោះ (Sold មិនបាច់មានក៏បាន)
+        // ពិនិត្យតែ In ប៉ុណ្ណោះ ចំណែក Sold ទទេក៏មិនអីដែរ
         if (inVal === "") {
             alert("⚠️ សូមបំពេញចំនួនដឹកចូល!");
             return;
@@ -95,18 +94,17 @@ function sendData() {
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
-    // ៤. រៀបចំទិន្នន័យផ្ញើទៅ Script
+    // ៤. រៀបចំទិន្នន័យ (ប្រើឈ្មោះអថេរដែលបានប្រកាសខាងលើ)
     const formData = {
         sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
         staffName: staffName,
         goal: goal,
         out: outVal || 0,
         in: inVal || 0,
-        sold: soldVal || 0, // បើទទេ វានឹងបញ្ជូនលេខ 0 ទៅ Sheet
+        sold: soldVal || 0, 
         actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
-    // ៥. ផ្ញើទៅ Google Script URL របស់អ្នក
     const scriptURL = "https://script.google.com/macros/s/AKfycbx3Sr2H886w_0ne0B0SIiREF7TZ9wrsEhsoPC-D2QE6ToCk6XLHKSKZh6XBdzashIhK/exec";
 
     fetch(scriptURL, {
@@ -117,9 +115,11 @@ function sendData() {
     .then(() => {
         alert("✅ បានរក្សាទុកជោគជ័យ!");
         document.getElementById("dataForm").reset();
-        toggleFields(); // កំណត់ Form ឱ្យមកសភាពដើម
+        toggleFields(); 
     })
-    .catch(error => alert("❌ បញ្ហា៖ " + error.message))
+    .catch(error => {
+        alert("❌ មានបញ្ហា៖ " + error.message);
+    })
     .finally(() => {
         btn.innerText = "រក្សាទុកទិន្នន័យ";
         btn.disabled = false;
@@ -128,6 +128,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
