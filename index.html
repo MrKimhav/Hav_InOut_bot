@@ -19,18 +19,27 @@
 </head>
 <body>
 
-<div class="container">
-    <h2>📝 បញ្ចូលទិន្នន័យ</h2>
-    <div id="loginSection" class="container">
+<div id="loginSection" class="container">
     <h2>🔐 សូមចូលប្រើប្រាស់</h2>
-    <label>ឈ្មោះអ្នកប្រើប្រាស់</label>
+    <label>ជ្រើសរើសឈ្មោះបុគ្គលិក</label>
     <select id="userLogin">
         <option value="A">បុគ្គលិក A</option>
         <option value="B">បុគ្គលិក B</option>
     </select>
+    
     <label>លេខសម្ងាត់ (PIN)</label>
     <input type="password" id="pinCode" placeholder="បញ្ចូលលេខសម្ងាត់ ៤ ខ្ទង់">
+    
     <button type="button" onclick="checkLogin()">ចូលប្រើប្រាស់</button>
+</div>
+
+<div id="mainFormSection" class="container" style="display: none;">
+    <h2>📝 បញ្ចូលទិន្នន័យ - <span id="displayUserName" style="color: #1a73e8;"></span></h2>
+    <form id="dataForm">
+        <input type="hidden" id="staffName">
+        
+        <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុកទិន្នន័យ</button>
+    </form>
 </div>
 
 <div id="mainForm" style="display: none;">
@@ -93,23 +102,31 @@
 <script>
     // កំណត់លេខសម្ងាត់សម្រាប់បុគ្គលិកម្នាក់ៗ
 const userCredentials = {
-    "A": "1234", // លេខសម្ងាត់បុគ្គលិក A
-    "B": "5678"  // លេខសម្ងាត់បុគ្គលិក B
+    "A": "1122", // លេខសម្ងាត់បុគ្គលិក A
+    "B": "3344"  // លេខសម្ងាត់បុគ្គលិក B
 };
 
 function checkLogin() {
     const user = document.getElementById("userLogin").value;
     const pin = document.getElementById("pinCode").value;
+    const loginDiv = document.getElementById("loginSection");
+    const mainDiv = document.getElementById("mainFormSection");
 
     if (userCredentials[user] === pin) {
-        // បើត្រូវ លាក់ Login បង្ហាញ Form
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("mainForm").style.display = "block";
+        // ១. លាក់ផ្នែក Login
+        loginDiv.style.display = "none";
         
-        // កំណត់ឈ្មោះបុគ្គលិកក្នុង Form អូតូតាមការ Login
+        // ២. បង្ហាញផ្នែក Form បញ្ចូលទិន្នន័យ
+        mainDiv.style.display = "block";
+        
+        // ៣. កំណត់តម្លៃបុគ្គលិកដែលបាន Login ចូលក្នុង Form
         document.getElementById("staffName").value = user;
+        document.getElementById("displayUserName").innerText = "បុគ្គលិក " + user;
+        
+        playSuccessSound(); // បន្លឺសំឡេង Ting ពេល Login ជោគជ័យ
     } else {
-        alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវទេ!");
+        alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវទេ! សូមព្យាយាមម្តងទៀត។");
+        document.getElementById("pinCode").value = ""; // សម្អាតប្រអប់ PIN
     }
 }
 // បន្ថែម Function toggleFields ដែលខ្វះ
@@ -219,6 +236,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
