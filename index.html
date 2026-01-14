@@ -74,7 +74,25 @@ function toggleFields() {
         sectionIn.style.display = "block";
     }
 }
+// Function សម្រាប់បន្លឺសំឡេង "Ding" ពេលជោគជ័យ
+function playSuccessSound() {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
 
+    oscillator.type = 'sine'; // សំឡេងបែបស្រទន់
+    oscillator.frequency.setValueAtTime(523.25, context.currentTime); // ណោត C5
+    oscillator.frequency.exponentialRampToValueAtTime(1046.50, context.currentTime + 0.5); // ឡើងទៅ C6
+
+    gainNode.gain.setValueAtTime(0.1, context.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.5);
+}
 function sendData() {
     const staffName = document.getElementById("staffName").value;
     const goal = document.getElementById("goal").value.trim();
@@ -122,11 +140,14 @@ function sendData() {
         mode: "no-cors",
         body: JSON.stringify(formData)
     })
+
     .then(() => {
+        playSuccessSound(); // <--- ហៅសំឡេងឱ្យបន្លឺឡើងនៅត្រង់នេះ
         alert("✅ បានរក្សាទុកជោគជ័យ!");
         document.getElementById("dataForm").reset();
         toggleFields(); 
     })
+  
     .catch(error => {
         alert("❌ មានបញ្ហា៖ " + error.message);
     })
@@ -138,5 +159,6 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
