@@ -6,7 +6,7 @@
     <title>ប្រព័ន្ធបញ្ចូលទិន្នន័យអូតូ</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f0f2f5; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
         label { font-weight: bold; display: block; margin-top: 15px; color: #444; }
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
@@ -15,6 +15,9 @@
         .radio-item input { width: auto; margin-right: 8px; }
         button { width: 100%; padding: 14px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; }
         .report-btn { background-color: #007bff; margin-top: 12px; text-decoration: none; display: block; text-align: center; color: white; padding: 12px; border-radius: 6px; font-weight: bold; }
+        
+        /* លាក់ Form បញ្ចូលទិន្នន័យជាមុនសិន */
+        #mainFormSection { display: none; }
     </style>
 </head>
 <body>
@@ -33,44 +36,20 @@
     <button type="button" onclick="checkLogin()">ចូលប្រើប្រាស់</button>
 </div>
 
-<div id="mainFormSection" class="container" style="display: none;">
+<div id="mainFormSection" class="container">
     <h2>📝 បញ្ចូលទិន្នន័យ - <span id="displayUserName" style="color: #1a73e8;"></span></h2>
     <form id="dataForm">
         <input type="hidden" id="staffName">
-        
-        <button type="button" id="submitBtn" onclick="sendData()">រក្សាទុកទិន្នន័យ</button>
-    </form>
-</div>
-
-<div id="mainForm" style="display: none;">
-    </div>
-    <form id="dataForm">
-        <label>ជ្រើសរើសឈ្មោះបុគ្គលិក</label>
-        <select id="staffName">
-            <option value="A">បុគ្គលិក A</option>
-            <option value="B">បុគ្គលិក B</option>
-            <option value="C">អ្នកផ្សេងទៀត</option>
-        </select>
 
         <label>គោលដៅចុងក្រោយ</label>
-<input list="goalOptions" id="goal" placeholder="--- ជ្រើសរើស ឬវាយឈ្មោះគោលដៅ ---">
-<datalist id="goalOptions">
-    <option value="រ៉ែដែក">
-    <option value="សេកសក">
-    <option value="អូរដា">
-    <option value="អូរកងឡាន">
-    <option value="ប៉ែឡែវ">
-    <option value="ចម្លងគួយ">
-    <option value="អក្សរតេ">
-    <option value="តាសាញ">
-    <option value="ស្ពានវែង">
-    <option value="ស៊ុង">
-    <option value="អូររថក្រោះ">
-    <option value="ទឹកសុក">
-    <option value="តាតោក">
-    <option value="អូរននោង">
-    <option value="ពោធិសាត់">
-    </datalist>
+        <input list="goalOptions" id="goal" placeholder="--- ជ្រើសរើស ឬវាយឈ្មោះគោលដៅ ---">
+        <datalist id="goalOptions">
+            <option value="រ៉ែដែក"> <option value="សេកសក"> <option value="អូរដា">
+            <option value="អូរកងឡាន"> <option value="ប៉ែឡែវ"> <option value="ចម្លងគួយ">
+            <option value="អក្សរតេ"> <option value="តាសាញ"> <option value="ស្ពានវែង">
+            <option value="ស៊ុង"> <option value="អូររថក្រោះ"> <option value="ទឹកសុក">
+            <option value="តាតោក"> <option value="អូរននោង"> <option value="ពោធិសាត់">
+        </datalist>
 
         <label>ប្រភេទប្រតិបត្តិការ</label>
         <div class="radio-group">
@@ -100,10 +79,9 @@
 </div>
 
 <script>
-    // កំណត់លេខសម្ងាត់សម្រាប់បុគ្គលិកម្នាក់ៗ
 const userCredentials = {
-    "A": "1122", // លេខសម្ងាត់បុគ្គលិក A
-    "B": "3344"  // លេខសម្ងាត់បុគ្គលិក B
+    "A": "1122",
+    "B": "3344"
 };
 
 function checkLogin() {
@@ -113,89 +91,53 @@ function checkLogin() {
     const mainDiv = document.getElementById("mainFormSection");
 
     if (userCredentials[user] === pin) {
-        // ១. លាក់ផ្នែក Login
         loginDiv.style.display = "none";
-        
-        // ២. បង្ហាញផ្នែក Form បញ្ចូលទិន្នន័យ
         mainDiv.style.display = "block";
-        
-        // ៣. កំណត់តម្លៃបុគ្គលិកដែលបាន Login ចូលក្នុង Form
         document.getElementById("staffName").value = user;
         document.getElementById("displayUserName").innerText = "បុគ្គលិក " + user;
-        
-        playSuccessSound(); // បន្លឺសំឡេង Ting ពេល Login ជោគជ័យ
+        playSuccessSound();
     } else {
-        alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវទេ! សូមព្យាយាមម្តងទៀត។");
-        document.getElementById("pinCode").value = ""; // សម្អាតប្រអប់ PIN
+        alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវទេ!");
+        document.getElementById("pinCode").value = "";
     }
 }
-// បន្ថែម Function toggleFields ដែលខ្វះ
+
 function toggleFields() {
     const opType = document.querySelector('input[name="opType"]:checked').value;
-    const sectionOut = document.getElementById("sectionOut");
-    const sectionIn = document.getElementById("sectionIn");
-
-    if (opType === "outType") {
-        sectionOut.style.display = "block";
-        sectionIn.style.display = "none";
-    } else {
-        sectionOut.style.display = "none";
-        sectionIn.style.display = "block";
-    }
+    document.getElementById("sectionOut").style.display = (opType === "outType") ? "block" : "none";
+    document.getElementById("sectionIn").style.display = (opType === "inType") ? "block" : "none";
 }
-// Function សម្រាប់បន្លឺសំឡេង "Ding" ពេលជោគជ័យ
+
 function playSuccessSound() {
     const context = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // បង្កើតសំឡេង Ting លើកទី១
     function playNote(delay, freq) {
         const osc = context.createOscillator();
         const gain = context.createGain();
-
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, context.currentTime + delay);
-
         gain.gain.setValueAtTime(0, context.currentTime + delay);
         gain.gain.linearRampToValueAtTime(0.2, context.currentTime + delay + 0.01);
         gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + 0.3);
-
         osc.connect(gain);
         gain.connect(context.destination);
-
         osc.start(context.currentTime + delay);
         osc.stop(context.currentTime + delay + 0.3);
     }
-
-    // លេងសំឡេង ២ ដង (Ting-Ting)
-    playNote(0, 880);      // សំឡេងទី១ (ខ្ពស់ល្មម)
-    playNote(0.15, 1046);  // សំឡេងទី២ (ខ្ពស់ជាងមុនបន្តិច និងបន្ទាប់គ្នា)
+    playNote(0, 880); playNote(0.15, 1046);
 }
+
 function sendData() {
     const staffName = document.getElementById("staffName").value;
     const goal = document.getElementById("goal").value.trim();
     const opType = document.querySelector('input[name="opType"]:checked').value;
     const btn = document.getElementById("submitBtn");
-
     const outVal = document.getElementById("out").value;
     const inVal = document.getElementById("in").value;
     const soldVal = document.getElementById("sold").value;
 
-    if (goal === "") {
-        alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!");
-        return;
-    }
-
-    if (opType === "outType") {
-        if (outVal === "") {
-            alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!");
-            return;
-        }
-    } else {
-        if (inVal === "") {
-            alert("⚠️ សូមបំពេញចំនួនដឹកចូល!");
-            return;
-        }
-    }
+    if (goal === "") { alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!"); return; }
+    if (opType === "outType" && outVal === "") { alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!"); return; }
+    if (opType === "inType" && inVal === "") { alert("⚠️ សូមបំពេញចំនួនដឹកចូល!"); return; }
 
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
@@ -206,7 +148,7 @@ function sendData() {
         goal: goal,
         out: outVal || 0,
         in: inVal || 0,
-        sold: soldVal || 0, 
+        sold: soldVal || 0,
         actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
@@ -217,17 +159,13 @@ function sendData() {
         mode: "no-cors",
         body: JSON.stringify(formData)
     })
-
     .then(() => {
-        playSuccessSound(); // <--- ហៅសំឡេងឱ្យបន្លឺឡើងនៅត្រង់នេះ
+        playSuccessSound();
         alert("✅ បានរក្សាទុកជោគជ័យ!");
         document.getElementById("dataForm").reset();
-        toggleFields(); 
+        toggleFields();
     })
-  
-    .catch(error => {
-        alert("❌ មានបញ្ហា៖ " + error.message);
-    })
+    .catch(error => alert("❌ មានបញ្ហា៖ " + error.message))
     .finally(() => {
         btn.innerText = "រក្សាទុកទិន្នន័យ";
         btn.disabled = false;
@@ -236,12 +174,3 @@ function sendData() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
