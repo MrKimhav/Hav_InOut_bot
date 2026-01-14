@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ប្រព័ន្ធបញ្ចូលទិន្នន័យអូតូ</title>
     <style>
+        .logout-btn {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    font-size: 13px;
+}
+.logout-btn:hover {
+    background-color: #f1b0b7;
+}
         body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f0f2f5; }
         .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
@@ -21,7 +34,34 @@
     </style>
 </head>
 <body>
+<div id="mainFormSection" class="container">
+    <button type="button" onclick="logout()" style="width: auto; padding: 8px 15px; background-color: #dc3545; margin-bottom: 10px; font-size: 12px; float: right;">
+        🚪 ចាកចេញ
+    </button>
+    <div style="clear: both;"></div>
 
+    <h2>📝 បញ្ចូលទិន្នន័យ - <span id="displayUserName" style="color: #1a73e8;"></span></h2>
+    ```
+
+---
+
+### ២. បន្ថែម Function `logout()` (ក្នុង `<script>`)
+ចម្លងកូដនេះទៅដាក់ក្នុងផ្នែក JavaScript របស់អ្នក៖
+
+```javascript
+function logout() {
+    // ១. បង្ហាញផ្ទាំង Login វិញ
+    document.getElementById("loginSection").style.display = "block";
+    
+    // ២. លាក់ផ្ទាំងបញ្ចូលទិន្នន័យ
+    document.getElementById("mainFormSection").style.display = "none";
+    
+    // ៣. លុបលេខសម្ងាត់ចាស់ចេញពីប្រអប់ PIN ដើម្បីសុវត្ថិភាព
+    document.getElementById("pinCode").value = "";
+    
+    // ៤. Reset Form បញ្ចូលទិន្នន័យ (ជម្រើស)
+    document.getElementById("dataForm").reset();
+}
 <div id="loginSection" class="container">
     <h2>🔐 សូមចូលប្រើប្រាស់</h2>
     <label>ជ្រើសរើសឈ្មោះបុគ្គលិក</label>
@@ -174,3 +214,4 @@ function sendData() {
 </script>
 </body>
 </html>
+
