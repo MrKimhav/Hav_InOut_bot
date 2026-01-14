@@ -48,18 +48,24 @@
 <script>
 function sendData() {
     const staffName = document.getElementById("staffName").value;
-    const goal = document.getElementById("goal").value;
+    const goal = document.getElementById("goal").value.trim();
     const out = document.getElementById("out").value;
     const inVal = document.getElementById("in").value;
     const sold = document.getElementById("sold").value;
     const btn = document.getElementById("submitBtn");
 
-    if (!goal || !out || !inVal || !sold) {
-        alert("⚠️ សូមបំពេញព័ត៌មានឱ្យបានគ្រប់ជ្រុងជ្រោយ!");
+    // លក្ខខណ្ឌថ្មីរបស់អ្នក
+    if (goal === "") {
+        alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!");
         return;
     }
 
-    // លក្ខខណ្ឌកំណត់ Sheet ដោយស្វ័យប្រវត្តិ (Smart Routing)
+    if (out === "" && inVal === "" && sold === "") {
+        alert("⚠️ សូមបំពេញយ៉ាងហោចណាស់មួយក្នុងចំណោម៖ ដឹកចេញ, ដឹកចូល ឬ លក់បាន!");
+        return;
+    }
+
+    // លក្ខខណ្ឌកំណត់ Sheet ដោយស្វ័យប្រវត្តិ
     let targetSheet = "Sheet1"; 
     if (staffName === "A") {
         targetSheet = "Sheet2";
@@ -71,15 +77,14 @@ function sendData() {
     btn.innerText = "កំពុងរក្សាទុក...";
 
     const formData = {
-        sheetName: targetSheet, // ឈ្មោះ Sheet ដែលត្រូវទៅ
+        sheetName: targetSheet,
         staffName: staffName,
         goal: goal,
-        out: out,
-        in: inVal,
-        sold: sold
+        out: out || 0, // បើមិនបំពេញ ផ្ញើទៅលេខ 0
+        in: inVal || 0, // បើមិនបំពេញ ផ្ញើទៅលេខ 0
+        sold: sold || 0  // បើមិនបំពេញ ផ្ញើទៅលេខ 0
     };
 
-    // ប្តូរ URL ខាងក្រោមនេះជាមួយ URL ថ្មីពី Google Deployment របស់អ្នក
     const scriptURL = "https://script.google.com/macros/s/AKfycbx3Sr2H886w_0ne0B0SIiREF7TZ9wrsEhsoPC-D2QE6ToCk6XLHKSKZh6XBdzashIhK/exec";
 
     fetch(scriptURL, {
@@ -104,5 +109,6 @@ function sendData() {
 
 </body>
 </html>
+
 
 
