@@ -30,7 +30,14 @@
         </select>
 
         <label>គោលដៅចុងក្រោយ</label>
-        <input type="text" id="goal" placeholder="បញ្ចូលឈ្មោះគោលដៅ...">
+<input list="goalOptions" id="goal" placeholder="--- ជ្រើសរើស ឬវាយឈ្មោះគោលដៅ ---">
+<datalist id="goalOptions">
+    <option value="ភ្នំពេញ">
+    <option value="សៀមរាប">
+    <option value="បាត់ដំបង">
+    <option value="កំពង់ចាម">
+    <option value="ព្រះសីហនុ">
+    </datalist>
 
         <label>ប្រភេទប្រតិបត្តិការ</label>
         <div class="radio-group">
@@ -167,6 +174,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
