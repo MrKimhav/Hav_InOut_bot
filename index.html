@@ -60,55 +60,54 @@
 </div>
 
 <script>
-function toggleFields() {
-    const isOut = document.querySelector('input[name="opType"]:checked').value === "outType";
-    document.getElementById("sectionOut").style.display = isOut ? "block" : "none";
-    document.getElementById("sectionIn").style.display = isOut ? "none" : "block";
-}
-
 function sendData() {
     const staffName = document.getElementById("staffName").value;
     const goal = document.getElementById("goal").value.trim();
     const opType = document.querySelector('input[name="opType"]:checked').value;
     const btn = document.getElementById("submitBtn");
 
-    // លក្ខខណ្ឌពិនិត្យ
+    // ១. ទាញតម្លៃពី Input ទាំងអស់
+    const outVal = document.getElementById("out").value;
+    const inVal = document.getElementById("in").value;
+    const soldVal = document.getElementById("sold").value;
+
+    // ២. ពិនិត្យលក្ខខណ្ឌ Goal (ត្រូវតែមានជានិច្ច)
+    if (goal === "") {
+        alert("⚠️ សូមបំពេញគោលដៅចុងក្រោយ!");
+        return;
+    }
+
+    // ៣. ពិនិត្យលក្ខខណ្ឌតាមប្រភេទប្រតិបត្តិការ
     if (opType === "outType") {
-        if (goal === "" || outVal === "") {
-            alert("⚠️ សូមបំពេញគោលដៅ និង ចំនួនដឹកចេញ!");
+        // បើដឹកចេញ៖ ត្រូវតែមាន Goal និង Out
+        if (outVal === "") {
+            alert("⚠️ សូមបំពេញចំនួនដឹកចេញ!");
             return;
         }
     } else {
-        // លុប !soldVal ចេញពីលក្ខខណ្ឌ if ខាងក្រោមនេះ
-        if (inVal === "") { 
+        // បើដឹកចូល៖ ត្រូវតែមានតែ In ប៉ុណ្ណោះ (Sold មិនបាច់មានក៏បាន)
+        if (inVal === "") {
             alert("⚠️ សូមបំពេញចំនួនដឹកចូល!");
             return;
         }
     }
 
-    // ... កូដបញ្ជូនទិន្នន័យ ...
-    const formData = {
-        // ...
-        in: inVal || 0,
-        sold: soldVal || 0  // បើទុកទទេ វានឹងយកលេខ 0 ទៅរក្សាទុកក្នុង Sheet
-    };
-}
-
     btn.disabled = true;
     btn.innerText = "កំពុងរក្សាទុក...";
 
+    // ៤. រៀបចំទិន្នន័យផ្ញើទៅ Script
     const formData = {
         sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
         staffName: staffName,
         goal: goal,
         out: outVal || 0,
         in: inVal || 0,
-        sold: soldVal || 0,
-        actionType: opType === "outType" ? "NEW" : "UPDATE" // បញ្ជាក់ទៅ Script ថាត្រូវថែមថ្មី ឬ Update
+        sold: soldVal || 0, // បើទទេ វានឹងបញ្ជូនលេខ 0 ទៅ Sheet
+        actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
-    // បញ្ជូនទៅ Google Script
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxP3UQyzjp8ZTkTuIqJzOaqmITcFwnHPbm-Sp-2Pi6QpsxC7mPfSNcZZoplNYVZANqD/exec";
+    // ៥. ផ្ញើទៅ Google Script URL របស់អ្នក
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx3Sr2H886w_0ne0B0SIiREF7TZ9wrsEhsoPC-D2QE6ToCk6XLHKSKZh6XBdzashIhK/exec";
 
     fetch(scriptURL, {
         method: "POST",
@@ -116,11 +115,11 @@ function sendData() {
         body: JSON.stringify(formData)
     })
     .then(() => {
-        alert("✅ រក្សាទុកជោគជ័យ!");
+        alert("✅ បានរក្សាទុកជោគជ័យ!");
         document.getElementById("dataForm").reset();
-        toggleFields();
+        toggleFields(); // កំណត់ Form ឱ្យមកសភាពដើម
     })
-    .catch(error => alert("❌ បញ្ហា: " + error.message))
+    .catch(error => alert("❌ បញ្ហា៖ " + error.message))
     .finally(() => {
         btn.innerText = "រក្សាទុកទិន្នន័យ";
         btn.disabled = false;
@@ -129,6 +128,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
