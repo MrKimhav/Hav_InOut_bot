@@ -88,28 +88,37 @@
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto;
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
             width: 95%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden; /* បិទ scroll ក្រៅ */
+            display: flex;
+            flex-direction: column;
         }
         .close-modal {
-            position: sticky;
-            top: 0;
-            float: right;
+            text-align: right;
             font-size: 28px;
             font-weight: bold;
             color: #aaa;
             cursor: pointer;
-            z-index: 10;
+            padding-bottom: 10px;
         }
         .close-modal:hover { color: #ff416c; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 12px; }
-        th { background: #1a73e8; color: white; position: sticky; top: 0; }
+
+        /* បន្ថែមផ្នែក Scroll ឱ្យតារាងលើទូរស័ព្ទ */
+        #reportTableContainer {
+            width: 100%;
+            overflow-x: auto; /* អនុញ្ញាតឱ្យអូសឆ្វេងស្តាំ */
+            overflow-y: auto; /* អនុញ្ញាតឱ្យអូសលើក្រោម */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 700px; } /* កំណត់ទំហំតូចបំផុតឱ្យតារាងដើម្បីកុំឱ្យច្របាច់អក្សរ */
+        th, td { border: 1px solid #ddd; padding: 8px 5px; text-align: center; font-size: 11px; white-space: pre-line; }
+        th { background: #1a73e8; color: white; position: sticky; top: 0; z-index: 2; }
         tr:nth-child(even) { background: #f9f9f9; }
     </style>
 </head>
@@ -118,7 +127,7 @@
 <div id="reportModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle" style="text-align:center; color:#1a73e8; font-size: 18px;">📊 របាយការណ៍</h2>
+        <h2 id="modalTitle" style="text-align:center; color:#1a73e8; font-size: 18px; margin-top: 0;">📊 របាយការណ៍</h2>
         <div id="reportTableContainer"></div>
     </div>
 </div>
@@ -192,7 +201,7 @@
 <script>
 const userCredentials = { "A": "1122", "B": "3344" };
 const scriptURL = "https://script.google.com/macros/s/AKfycbxhNUs5xgd3r7zF4bm_MUQJIE4p6mBGdsYQg8K-4obBXxsfPBeZdtGgHgX_6nR53oyB/exec";
-let currentSheet = ""; // អថេរសម្រាប់ទុកឈ្មោះ Sheet បន្ទាប់ពី Login
+let currentSheet = ""; 
 
 function checkLogin() {
     const user = document.getElementById("userLogin").value;
@@ -202,17 +211,13 @@ function checkLogin() {
         document.getElementById("mainFormSection").style.display = "block";
         document.getElementById("staffName").value = user;
         document.getElementById("displayUserName").innerText = "បុគ្គលិក " + user;
-        
-        // កំណត់ឈ្មោះ Sheet ទៅតាមបុគ្គលិកដែល Login
         currentSheet = (user === "A") ? "Sheet2" : (user === "B" ? "Sheet3" : "Sheet1");
-        
         playSuccessSound();
     } else { alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវ!"); }
 }
 
 function viewMyReport() {
     if (currentSheet) {
-        // ហៅ fetchReport ដោយបញ្ជូន ID នៃប៊ូតុងទៅជាមួយដើម្បីបង្ហាញ loading
         fetchReport(currentSheet, "btnMyReport");
     } else {
         alert("សូម Login ម្តងទៀត!");
@@ -224,7 +229,7 @@ function logout() {
     document.getElementById("mainFormSection").style.display = "none";
     document.getElementById("pinCode").value = "";
     document.getElementById("dataForm").reset();
-    currentSheet = ""; // លុបឈ្មោះ Sheet ចេញពេល Logout
+    currentSheet = ""; 
     toggleFields();
 }
 
@@ -291,7 +296,6 @@ function sendData() {
     });
 }
 
-/* --- មុខងារបង្ហាញរបាយការណ៍ក្នុងផ្ទាំងលោត (Modal) --- */
 function fetchReport(sheetName, buttonId) {
     let btn;
     if (buttonId) {
@@ -310,44 +314,4 @@ function fetchReport(sheetName, buttonId) {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("modalTitle").innerText = "📊 របាយការណ៍៖ " + sheetName;
-        let html = "<table>";
-        data.forEach((row, index) => {
-            html += "<tr>";
-            row.forEach(cell => {
-                let val = cell;
-                if (index > 0 && typeof cell === 'string' && cell.includes('T') && cell.includes('Z')) {
-                    const d = new Date(cell);
-                    val = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
-                }
-                html += index === 0 ? `<th>${val}</th>` : `<td>${val}</td>`;
-            });
-            html += "</tr>";
-        });
-        html += "</table>";
-        document.getElementById("reportTableContainer").innerHTML = html;
-        document.getElementById("reportModal").style.display = "block";
-    })
-    .catch(err => alert("❌ បញ្ហាទាញរបាយការណ៍៖ " + err))
-    .finally(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-}
-
-function closeModal() {
-    document.getElementById("reportModal").style.display = "none";
-}
-
-window.onclick = function(event) {
-    const modal = document.getElementById("reportModal");
-    if (event.target == modal) { modal.style.display = "none"; }
-}
-</script>
-</body>
-</html>
-
-
-
-
-
+        document.getElementById("modalTitle").innerText =
