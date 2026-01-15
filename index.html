@@ -96,10 +96,18 @@
     <button type="button" class="submit-btn" onclick="checkLogin()">ចូលប្រើប្រាស់</button>
 
     <span class="report-label">📊 មើលរបាយការណ៍រហ័ស (មិនបាច់ Login)</span>
-    <div class="report-group">
-        <a href="reportA.html" class="btn-view-report">របាយការណ៍ A</a>
-        <a href="reportB.html" class="btn-view-report">របាយការណ៍ B</a>
+<div class="report-group">
+    <button type="button" class="btn-view-report" onclick="fetchReport('Sheet2')">របាយការណ៍ A</button>
+    <button type="button" class="btn-view-report" onclick="fetchReport('Sheet3')">របាយការណ៍ B</button>
+</div>
+
+<div id="reportContainer" style="display:none; margin-top: 20px; border-top: 2px solid #1a73e8; padding-top: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 id="reportTitle" style="font-size:14px; color:#1a73e8; margin:0;"></h3>
+        <button onclick="document.getElementById('reportContainer').style.display='none'" style="background:#ff416c; color:white; border:none; border-radius:4px; padding: 2px 8px; cursor:pointer;">បិទ</button>
     </div>
+    <div id="reportDisplay" style="overflow-x:auto; background: #fff; border-radius: 8px;"></div>
+</div>
 </div>
 
 <div id="mainFormSection" class="container">
@@ -235,6 +243,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
