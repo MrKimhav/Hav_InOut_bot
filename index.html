@@ -202,42 +202,74 @@ function playSuccessSound() {
     playNote(0, 880); playNote(0.15, 1046);
 }
 
-function sendData() {
-    const staffName = document.getElementById("staffName").value;
-    const goal = document.getElementById("goal").value.trim();
-    const opType = document.querySelector('input[name="opType"]:checked').value;
-    const btn = document.getElementById("submitBtn");
+function fetchReport(sheetName) {
+    const url = "https://script.google.com/macros/s/AKfycbxCo3oo5Ziiw8J3R9MmFlkTzRZEgoCSRAwHUuFwZ8vLzecfzE1fKarZfT-AYB6Bor2x/exec";
     
-    if (goal === "") { alert("⚠️ សូមជ្រើសរើសគោលដៅ!"); return; }
+    // បង្ហាញការរង់ចាំ
+    alert("កំពុងទាញទិន្នន័យរបាយការណ៍... សូមរង់ចាំមួយភ្លែត!");
 
-    btn.disabled = true;
-    btn.innerText = "កំពុងរក្សាទុក...";
-
-    const formData = {
-        sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
-        staffName: staffName,
-        goal: goal,
-        out: document.getElementById("out").value || 0,
-        in: document.getElementById("in").value || 0,
-        sold: document.getElementById("sold").value || 0,
-        actionType: opType === "outType" ? "NEW" : "UPDATE"
-    };
-
-    fetch("https://script.google.com/macros/s/AKfycbxMR1wVFbRB1l0Ria7pP_76nrXitnTZsmBej5OfwygenhCGRZb6n14yiq6wOOGvH0mA/exec", {
+    fetch(url, {
         method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ actionType: "READ", sheetName: sheetName })
     })
-    .then(() => {
-        playSuccessSound();
-        alert("✅ រក្សាទុកជោគជ័យ!");
-        document.getElementById("dataForm").reset();
-        toggleFields();
+    .then(res => res.json())
+    .then(data => {
+        if (!data || data.length === 0) {
+            alert("មិនមានទិន្នន័យឡើយ");
+            return;
+        }
+        
+        // បើក Window ថ្មី
+        const newWindow = window.open("", "_blank");
+        
+        // បង្កើតមាតិកា HTML សម្រាប់ទំព័រថ្មី
+        let tableHtml = `
+            <html>
+            <head>
+                <title>របាយការណ៍ ${sheetName}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background: #f4f7f6; }
+                    h2 { color: #1a73e8; text-align: center; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+                    th, td { border: 1px solid #ddd; padding: 12px; text-align: center; font-size: 14px; }
+                    th { background-color: #1a73e8; color: white; }
+                    tr:nth-child(even) { background-color: #f9f9f9; }
+                    .btn-print { display: block; width: 100px; margin: 20px auto; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; text-align: center; }
+                    @media print { .btn-print { display: none; } }
+                </style>
+            </head>
+            <body>
+                <h2>📊 របាយការណ៍៖ ${sheetName}</h2>
+                <button class="btn-print" onclick="window.print()">បោះពុម្ព (Print)</button>
+                <table>
+        `;
+
+        // បញ្ចូលទិន្នន័យទៅក្នុងតារាង
+        data.forEach((row, index) => {
+            tableHtml += "<tr>";
+            row.forEach(cell => {
+                let val = cell;
+                // បើជាកាលបរិច្ឆេទ សម្រួលឱ្យខ្លី
+                if (index > 0 && typeof cell === 'string' && cell.includes('T') && cell.includes('Z')) {
+                    val = new Date(cell).toLocaleDateString('km-KH');
+                }
+                tableHtml += index === 0 ? `<th>${val}</th>` : `<td>${val}</td>`;
+            });
+            tableHtml += "</tr>";
+        });
+
+        tableHtml += `
+                </table>
+            </body>
+            </html>
+        `;
+
+        newWindow.document.write(tableHtml);
+        newWindow.document.close();
     })
-    .catch(err => alert("❌ បញ្ហា៖ " + err))
-    .finally(() => {
-        btn.disabled = false;
-        btn.innerText = "រក្សាទុកទិន្នន័យ";
+    .catch(err => {
+        alert("❌ បញ្ហា៖ " + err);
     });
 }
     // បន្ថែម Function ថ្មីនេះនៅខាងក្រោមគេបង្អស់
@@ -291,6 +323,7 @@ function fetchReport(sheetName) {
 </script>
 </body>
 </html>
+
 
 
 
