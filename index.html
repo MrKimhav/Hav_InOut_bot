@@ -219,7 +219,7 @@ function sendData() {
         actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxCo3oo5Ziiw8J3R9MmFlkTzRZEgoCSRAwHUuFwZ8vLzecfzE1fKarZfT-AYB6Bor2x/exec", {
+    fetch("https://script.google.com/macros/s/AKfycby0P1eqU-Exy00S8kIiGuDbw9MIKcYX2_yCfUq8APP48PxfEv220IQnWFNSfjfRThOC/exec", {
         method: "POST",
         mode: "no-cors",
         body: JSON.stringify(formData)
@@ -241,7 +241,7 @@ function sendData() {
 
 // --- មុខងារថ្មីសម្រាប់បើករបាយការណ៍ក្នុង TAB ថ្មី ---
 function fetchReport(sheetName) {
-    const url = "https://script.google.com/macros/s/AKfycbxCo3oo5Ziiw8J3R9MmFlkTzRZEgoCSRAwHUuFwZ8vLzecfzE1fKarZfT-AYB6Bor2x/exec";
+    const url = "https://script.google.com/macros/s/AKfycby0P1eqU-Exy00S8kIiGuDbw9MIKcYX2_yCfUq8APP48PxfEv220IQnWFNSfjfRThOC/exec";
     
     // បង្ហាញ Loading នៅលើប៊ូតុងដែលបានចុច
     const btn = event.target;
@@ -310,3 +310,4 @@ function fetchReport(sheetName) {
 </script>
 </body>
 </html>
+
