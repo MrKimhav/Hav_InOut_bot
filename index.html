@@ -215,18 +215,46 @@ function sendData() {
         actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
-    fetch("https://script.google.com/macros/s/AKfycby4j7RB7MH7rC4FUZsRLuxcOycUQo1frw-XDS09D92MucIL3-Jsej-feXagxj80k3eL/exec", {
+const WEB_APP_URL = "URL_ថ្មី_ដែលបានពីការ_DEPLOY_លើកចុងក្រោយ";
+
+function sendData() {
+    const staffName = document.getElementById("staffName").value;
+    const goal = document.getElementById("goal").value.trim();
+    const opType = document.querySelector('input[name="opType"]:checked').value;
+    const btn = document.getElementById("submitBtn");
+    
+    if (goal === "") { alert("⚠️ សូមជ្រើសរើសគោលដៅ!"); return; }
+
+    btn.disabled = true;
+    btn.innerText = "កំពុងរក្សាទុក...";
+
+    const formData = {
+        sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
+        goal: goal,
+        out: document.getElementById("out").value || 0,
+        in: document.getElementById("in").value || 0,
+        sold: document.getElementById("sold").value || 0,
+        actionType: opType === "outType" ? "NEW" : "UPDATE"
+    };
+
+    // ប្តូរការប្រើ fetch ដើម្បីឱ្យអាន Response បាន
+    fetch(WEB_APP_URL, {
         method: "POST",
-        mode: "no-cors",
+        mode: "cors", // ប្តូរពី no-cors មក cors
         body: JSON.stringify(formData)
     })
-    .then(() => {
-        playSuccessSound();
-        alert("✅ រក្សាទុកជោគជ័យ!");
-        document.getElementById("dataForm").reset();
-        toggleFields();
+    .then(res => res.json())
+    .then(data => {
+        if(data.result === "success") {
+            playSuccessSound();
+            alert("✅ " + data.message);
+            document.getElementById("dataForm").reset();
+            toggleFields();
+        } else {
+            alert("❌ បញ្ហា៖ " + data.message);
+        }
     })
-    .catch(err => alert("❌ បញ្ហា៖ " + err))
+    .catch(err => alert("❌ បញ្ហាការតភ្ជាប់៖ " + err))
     .finally(() => {
         btn.disabled = false;
         btn.innerText = "រក្សាទុកទិន្នន័យ";
@@ -235,6 +263,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
