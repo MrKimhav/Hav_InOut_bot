@@ -95,7 +95,7 @@
     <input type="password" id="pinCode" placeholder="បញ្ចូល PIN ៤ ខ្ទង់">
     <button type="button" class="submit-btn" onclick="checkLogin()">ចូលប្រើប្រាស់</button>
 
-    <span class="report-label">📊 មើលរបាយការណ៍រហ័ស (មិនបាច់ Login)</span>
+    <span class="report-label">📊 មើលរបាយការណ៍រហ័ស</span>
     <div class="report-group">
         <a href="report.html?sheet=Sheet2" class="btn-view-report">របាយការណ៍ A</a>
         <a href="report.html?sheet=Sheet3" class="btn-view-report">របាយការណ៍ B</a>
@@ -215,7 +215,7 @@ function sendData() {
         actionType: opType === "outType" ? "NEW" : "UPDATE"
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyAow8PGeczp2JfO8fUSzwDuV5nCGKSCzJVd1RNFLkd7orZZqArhnOsEP52phxeBTbn/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzBogohAdzeuO0O2I9TiCbbomdMkXqqcBqcvOl5CVL8RNl6nhoXRy8XKXOfwzAi1oEX/exec", {
         method: "POST",
         mode: "no-cors",
         body: JSON.stringify(formData)
@@ -235,6 +235,7 @@ function sendData() {
 </script>
 </body>
 </html>
+
 
 
 
