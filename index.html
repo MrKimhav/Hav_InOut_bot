@@ -239,10 +239,58 @@ function sendData() {
         btn.disabled = false;
         btn.innerText = "រក្សាទុកទិន្នន័យ";
     });
+// បន្ថែម Function ថ្មីនេះនៅខាងក្រោមគេបង្អស់ មុនបិទ </script>
+function fetchReport(sheetName) {
+    // ប្រើ URL ដូចក្នុង sendData របស់អ្នក
+    const url = "https://script.google.com/macros/s/AKfycbxCo3oo5Ziiw8J3R9MmFlkTzRZEgoCSRAwHUuFwZ8vLzecfzE1fKarZfT-AYB6Bor2x/exec";
+    const display = document.getElementById('reportDisplay');
+    const container = document.getElementById('reportContainer');
+    
+    display.innerHTML = "<p style='text-align:center; font-size:12px; color:#888;'>កំពុងទាញទិន្នន័យ...</p>";
+    container.style.display = "block";
+    document.getElementById('reportTitle').innerText = "📊 របាយការណ៍៖ " + sheetName;
+
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ actionType: "READ", sheetName: sheetName })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data || data.length === 0) {
+            display.innerHTML = "មិនមានទិន្នន័យឡើយ";
+            return;
+        }
+        
+        // បង្កើតតារាង HTML
+        let html = '<table style="width:100%; border-collapse: collapse; font-size:11px; border:1px solid #ddd;">';
+        data.forEach((row, index) => {
+            // ជួរទី១ ជាក្បាលតារាង (Header)
+            const bgColor = (index === 0) ? '#1a73e8' : (index % 2 === 0 ? '#f8f9fa' : '#ffffff');
+            const textColor = (index === 0) ? '#ffffff' : '#333333';
+            const fontWeight = (index === 0) ? 'bold' : 'normal';
+
+            html += `<tr style="background:${bgColor}; color:${textColor}; font-weight:${fontWeight};">`;
+            row.forEach(cell => {
+                // ប្រសិនបើជាកាលបរិច្ឆេទ សម្រួលឱ្យខ្លី
+                let cellValue = cell;
+                if (index > 0 && typeof cell === 'string' && cell.includes('T') && cell.includes('Z')) {
+                    cellValue = new Date(cell).toLocaleDateString('km-KH');
+                }
+                html += `<td style="padding:10px 5px; border:1px solid #eee; text-align:center;">${cellValue}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</table>';
+        display.innerHTML = html;
+    })
+    .catch(err => {
+        display.innerHTML = "<p style='color:red; font-size:12px;'>❌ បញ្ហា៖ " + err + "</p>";
+    });
 }
 </script>
 </body>
 </html>
+
 
 
 
