@@ -90,9 +90,9 @@
             margin: 5% auto;
             padding: 20px;
             border-radius: 12px;
-            width: 90%;
+            width: 95%;
             max-width: 800px;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
         }
@@ -185,13 +185,14 @@
         </div>
 
         <button type="button" id="submitBtn" class="submit-btn" onclick="sendData()">រក្សាទុកទិន្នន័យ</button>
-        <div class="report-btn" onclick="fetchReport('Sheet1')">📊 មើលរបាយការណ៍សរុប</div>
+        <div class="report-btn" id="btnMyReport" onclick="viewMyReport()">📊 មើលរបាយការណ៍សរុប</div>
     </form>
 </div>
 
 <script>
 const userCredentials = { "A": "1122", "B": "3344" };
 const scriptURL = "https://script.google.com/macros/s/AKfycbyeIb-3hO64Rmwft60mFcNVUt-RhTtFcu_641hVloNjn-5mlqv5Mqfl6YIjQaKKfhhH/exec";
+let currentSheet = ""; // អថេរសម្រាប់ទុកឈ្មោះ Sheet បន្ទាប់ពី Login
 
 function checkLogin() {
     const user = document.getElementById("userLogin").value;
@@ -201,8 +202,21 @@ function checkLogin() {
         document.getElementById("mainFormSection").style.display = "block";
         document.getElementById("staffName").value = user;
         document.getElementById("displayUserName").innerText = "បុគ្គលិក " + user;
+        
+        // កំណត់ឈ្មោះ Sheet ទៅតាមបុគ្គលិកដែល Login
+        currentSheet = (user === "A") ? "Sheet2" : (user === "B" ? "Sheet3" : "Sheet1");
+        
         playSuccessSound();
     } else { alert("❌ លេខសម្ងាត់មិនត្រឹមត្រូវ!"); }
+}
+
+function viewMyReport() {
+    if (currentSheet) {
+        // ហៅ fetchReport ដោយបញ្ជូន ID នៃប៊ូតុងទៅជាមួយដើម្បីបង្ហាញ loading
+        fetchReport(currentSheet, "btnMyReport");
+    } else {
+        alert("សូម Login ម្តងទៀត!");
+    }
 }
 
 function logout() {
@@ -210,6 +224,7 @@ function logout() {
     document.getElementById("mainFormSection").style.display = "none";
     document.getElementById("pinCode").value = "";
     document.getElementById("dataForm").reset();
+    currentSheet = ""; // លុបឈ្មោះ Sheet ចេញពេល Logout
     toggleFields();
 }
 
@@ -247,7 +262,7 @@ function sendData() {
     btn.innerText = "កំពុងរក្សាទុក...";
 
     const formData = {
-        sheetName: (staffName === "A") ? "Sheet2" : (staffName === "B" ? "Sheet3" : "Sheet1"),
+        sheetName: currentSheet,
         staffName: staffName,
         goal: goal,
         out: document.getElementById("out").value || 0,
@@ -277,9 +292,15 @@ function sendData() {
 }
 
 /* --- មុខងារបង្ហាញរបាយការណ៍ក្នុងផ្ទាំងលោត (Modal) --- */
-function fetchReport(sheetName) {
-    const btn = event.target;
-    const originalText = btn.innerText;
+function fetchReport(sheetName, buttonId) {
+    let btn;
+    if (buttonId) {
+        btn = document.getElementById(buttonId);
+    } else {
+        btn = event.target;
+    }
+    
+    const originalText = btn.innerHTML;
     btn.innerText = "⏳...";
     btn.disabled = true;
 
@@ -309,7 +330,7 @@ function fetchReport(sheetName) {
     })
     .catch(err => alert("❌ បញ្ហាទាញរបាយការណ៍៖ " + err))
     .finally(() => {
-        btn.innerText = originalText;
+        btn.innerHTML = originalText;
         btn.disabled = false;
     });
 }
@@ -318,7 +339,6 @@ function closeModal() {
     document.getElementById("reportModal").style.display = "none";
 }
 
-// បិទ Modal នៅពេលចុចផ្ទៃខាងក្រៅ
 window.onclick = function(event) {
     const modal = document.getElementById("reportModal");
     if (event.target == modal) { modal.style.display = "none"; }
@@ -326,13 +346,3 @@ window.onclick = function(event) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
