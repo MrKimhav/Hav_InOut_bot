@@ -41,7 +41,12 @@
 </div>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbw1CZL_rPXcYLkKe7zNpNk2kXSODuoG22FdCEU0POPx_yZicdoHoOLS478hutjxhrY/exec"; 
+  // ១. ចាប់យក Parameter ពី URL
+const urlParams = new URLSearchParams(window.location.search);
+const selectedSheet = urlParams.get('sheet') || 'Sheet1'; // បើរកមិនឃើញ ឱ្យយក Sheet1
+
+// ២. បញ្ចូលឈ្មោះ Sheet ទៅក្នុង Script URL
+const scriptURL = "https://script.google.com/macros/s/.../exec" + "?sheetName=" + selectedSheet;
 
     fetch(scriptURL)
     .then(res => res.json())
@@ -98,6 +103,7 @@
 
 </body>
 </html>
+
 
 
 
