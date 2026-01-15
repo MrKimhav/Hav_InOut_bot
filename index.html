@@ -6,33 +6,35 @@
     <title>ប្រព័ន្ធបញ្ចូលទិន្នន័យអូតូ</title>
     <style>
         /* រចនាប៊ូតុងរបាយការណ៍នៅខាងក្រៅ */
-.report-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-.btn-view-report {
-    flex: 1;
-    padding: 10px;
-    background-color: #0505AB; /* ពណ៌ប្រផេះ */
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: bold;
-    transition: background 0.3s;
-}
-.btn-view-report:hover {
-    background-color: #5a6268;
-}
-.report-label {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 12px;
-    color: #888;
-    display: block;
-}
+        .report-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-view-report {
+            flex: 1;
+            padding: 10px;
+            background-color: #0505AB; 
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-view-report:hover {
+            background-color: #5a6268;
+        }
+        .report-label {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            display: block;
+        }
         body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f0f2f5; }
         .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; }
         
@@ -97,8 +99,8 @@
 
     <span class="report-label">📊 មើលរបាយការណ៍រហ័ស (មិនបាច់ Login)</span>
     <div class="report-group">
-        <a href="reportA.html" class="btn-view-report">របាយការណ៍ A</a>
-        <a href="reportB.html" class="btn-view-report">របាយការណ៍ B</a>
+        <button type="button" class="btn-view-report" onclick="fetchReport('Sheet2')">របាយការណ៍ A</button>
+        <button type="button" class="btn-view-report" onclick="fetchReport('Sheet3')">របាយការណ៍ B</button>
     </div>
 </div>
 
@@ -146,7 +148,7 @@
         </div>
 
         <button type="button" id="submitBtn" class="submit-btn" onclick="sendData()">រក្សាទុកទិន្នន័យ</button>
-        <a href="report.html" class="report-btn">📊 មើលរបាយការណ៍សរុប</a>
+        <a href="#" class="report-btn" onclick="fetchReport('Sheet1')">📊 មើលរបាយការណ៍សរុប</a>
     </form>
 </div>
 
@@ -180,18 +182,20 @@ function toggleFields() {
 }
 
 function playSuccessSound() {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
-    function playNote(delay, freq) {
-        const osc = context.createOscillator();
-        const gain = context.createGain();
-        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, context.currentTime + delay);
-        gain.gain.setValueAtTime(0, context.currentTime + delay);
-        gain.gain.linearRampToValueAtTime(0.2, context.currentTime + delay + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + 0.3);
-        osc.connect(gain); gain.connect(context.destination);
-        osc.start(context.currentTime + delay); osc.stop(context.currentTime + delay + 0.3);
-    }
-    playNote(0, 880); playNote(0.15, 1046);
+    try {
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        function playNote(delay, freq) {
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(freq, context.currentTime + delay);
+            gain.gain.setValueAtTime(0, context.currentTime + delay);
+            gain.gain.linearRampToValueAtTime(0.2, context.currentTime + delay + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + 0.3);
+            osc.connect(gain); gain.connect(context.destination);
+            osc.start(context.currentTime + delay); osc.stop(context.currentTime + delay + 0.3);
+        }
+        playNote(0, 880); playNote(0.15, 1046);
+    } catch(e) { console.log("Audio blocked"); }
 }
 
 function sendData() {
@@ -223,8 +227,10 @@ function sendData() {
     .then(() => {
         playSuccessSound();
         alert("✅ រក្សាទុកជោគជ័យ!");
-        document.getElementById("dataForm").reset();
-        toggleFields();
+        document.getElementById("goal").value = "";
+        document.getElementById("out").value = "";
+        document.getElementById("in").value = "";
+        document.getElementById("sold").value = "";
     })
     .catch(err => alert("❌ បញ្ហា៖ " + err))
     .finally(() => {
@@ -232,11 +238,75 @@ function sendData() {
         btn.innerText = "រក្សាទុកទិន្នន័យ";
     });
 }
+
+// --- មុខងារថ្មីសម្រាប់បើករបាយការណ៍ក្នុង TAB ថ្មី ---
+function fetchReport(sheetName) {
+    const url = "https://script.google.com/macros/s/AKfycbxCo3oo5Ziiw8J3R9MmFlkTzRZEgoCSRAwHUuFwZ8vLzecfzE1fKarZfT-AYB6Bor2x/exec";
+    
+    // បង្ហាញ Loading នៅលើប៊ូតុងដែលបានចុច
+    const btn = event.target;
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ រង់ចាំ...";
+    btn.disabled = true;
+
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ actionType: "READ", sheetName: sheetName })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const reportWindow = window.open("", "_blank");
+        if(!reportWindow) {
+            alert("⚠️ សូមអនុញ្ញាតឱ្យបើក Pop-up ក្នុង Browser របស់អ្នក!");
+            return;
+        }
+
+        let tableHtml = `
+            <html>
+            <head>
+                <title>របាយការណ៍ ${sheetName}</title>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background: #f4f7f6; }
+                    h2 { color: #1a73e8; text-align: center; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+                    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 13px; }
+                    th { background: #1a73e8; color: white; }
+                    tr:nth-child(even) { background: #f9f9f9; }
+                    .print-btn { display: block; width: 120px; margin: 20px auto; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                    @media print { .print-btn { display: none; } }
+                </style>
+            </head>
+            <body>
+                <h2>📊 របាយការណ៍៖ ${sheetName}</h2>
+                <button class="print-btn" onclick="window.print()">🖨️ បោះពុម្ព</button>
+                <table>
+        `;
+
+        data.forEach((row, index) => {
+            tableHtml += "<tr>";
+            row.forEach(cell => {
+                let val = cell;
+                if (index > 0 && typeof cell === 'string' && cell.includes('T') && cell.includes('Z')) {
+                    const d = new Date(cell);
+                    val = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+                }
+                tableHtml += index === 0 ? `<th>${val}</th>` : `<td>${val}</td>`;
+            });
+            tableHtml += "</tr>";
+        });
+
+        tableHtml += "</table></body></html>";
+        reportWindow.document.write(tableHtml);
+        reportWindow.document.close();
+    })
+    .catch(err => alert("❌ បញ្ហាទាញរបាយការណ៍៖ " + err))
+    .finally(() => {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    });
+}
 </script>
 </body>
 </html>
-
-
-
-
-
