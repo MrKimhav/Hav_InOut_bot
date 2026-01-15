@@ -298,12 +298,15 @@ function sendData() {
 
 function fetchReport(sheetName, buttonId) {
     let btn;
+    // ពិនិត្យមើលថាតើការហៅមកពីប៊ូតុងដែលមាន ID ឬមកពីការចុចផ្ទាល់
     if (buttonId) {
         btn = document.getElementById(buttonId);
-    } else {
+    } else if (event && event.target) {
         btn = event.target;
     }
-    
+
+    if (!btn) return; // បើរកប៊ូតុងមិនឃើញ មិនធ្វើការងារបន្ត
+
     const originalText = btn.innerHTML;
     btn.innerText = "⏳...";
     btn.disabled = true;
@@ -314,4 +317,32 @@ function fetchReport(sheetName, buttonId) {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("modalTitle").innerText =
+        document.getElementById("modalTitle").innerText = "📊 របាយការណ៍៖ " + sheetName;
+        let html = "<table>";
+        data.forEach((row, index) => {
+            html += "<tr>";
+            row.forEach(cell => {
+                let val = cell;
+                // បំប្លែងថ្ងៃខែឱ្យមើលទៅស្អាត ប្រសិនបើជា Date Object
+                if (index > 0 && typeof cell === 'string' && cell.includes('T') && cell.includes('Z')) {
+                    const d = new Date(cell);
+                    val = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+                }
+                html += index === 0 ? `<th>${val}</th>` : `<td>${val}</td>`;
+            });
+            html += "</tr>";
+        });
+        html += "</table>";
+        document.getElementById("reportTableContainer").innerHTML = html;
+        document.getElementById("reportModal").style.display = "block";
+    })
+    .catch(err => {
+        console.error(err);
+        alert("❌ បញ្ហាទាញរបាយការណ៍៖ សូមពិនិត្យមើល URL ក្នុង Script របស់អ្នក!");
+    })
+    .finally(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
