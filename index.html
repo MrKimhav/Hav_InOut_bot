@@ -165,7 +165,25 @@ function fetchReport(sheetName, btn) {
         let html = "<table>";
         data.forEach((row, i) => {
             html += "<tr>";
-            row.forEach(cell => { html += (i === 0) ? `<th>${cell}</th>` : `<td>${cell}</td>`; });
+            row.forEach((cell, j) => {
+                if (i === 0) {
+                    // សម្រាប់ចំណងជើង (Header)
+                    html += `<th>${cell}</th>`;
+                } else {
+                    // កំណត់ពណ៌តាម Column (j គឺជាលេខរៀង Column ចាប់ពី 0 ទៅ)
+                    let style = "";
+                    
+                    if (j === 2) { // Column C: ដឹកចេញ
+                        style = "color: #0000FF; font-weight: bold;"; // ពណ៌ខៀវដិត
+                    } else if (j === 5) { // Column F: ជំពាក់
+                        style = "color: #FF0000; font-weight: bold;"; // ពណ៌ក្រហមដិត
+                    } else if (j === 6) { // Column G: សង
+                        style = "color: #28a745; font-weight: bold;"; // ពណ៌បៃតងដិត
+                    }
+
+                    html += `<td style="${style}">${cell}</td>`;
+                }
+            });
             html += "</tr>";
         });
         html += "</table>";
@@ -180,4 +198,5 @@ function closeModal() { document.getElementById("reportModal").style.display = "
 </script>
 </body>
 </html>
+
 
