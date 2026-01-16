@@ -163,40 +163,59 @@ function fetchReport(sheetName, btn) {
     .then(res => res.json())
     .then(data => {
         let html = "<table>";
+        let totals = { out: 0, in: 0, sold: 0, debt: 0, payback: 0 };
+
         data.forEach((row, i) => {
             html += "<tr>";
             row.forEach((cell, j) => {
                 if (i === 0) {
-                    // សម្រាប់ចំណងជើង (Header)
                     html += `<th>${cell}</th>`;
                 } else {
-                    // កំណត់ពណ៌តាម Column (j គឺជាលេខរៀង Column ចាប់ពី 0 ទៅ)
+                    // បំប្លែងតម្លៃទៅជាលេខសម្រាប់បូកសរុប (ដកម៉ោងចេញបើមាន)
+                    let numValue = (typeof cell === 'string') ? parseFloat(cell.split("\n")[0]) : parseFloat(cell);
+                    if (isNaN(numValue)) numValue = 0;
+
+                    // បូកសរុបតាម Column (C=2, D=3, E=4, F=5, G=6)
+                    if (j === 2) totals.out += numValue;
+                    if (j === 3) totals.in += numValue;
+                    if (j === 4) totals.sold += numValue;
+                    if (j === 5) totals.debt += numValue;
+                    if (j === 6) totals.payback += numValue;
+
+                    // កំណត់ពណ៌តាម Column
                     let style = "";
-                    
-                    if (j === 2) { // Column C: ដឹកចេញ
-                        style = "color: #0000FF; font-weight: bold;"; // ពណ៌ខៀវដិត
-                    } else if (j === 5) { // Column F: ជំពាក់
-                        style = "color: #FF0000; font-weight: bold;"; // ពណ៌ក្រហមដិត
-                    } else if (j === 6) { // Column G: សង
-                        style = "color: #28a745; font-weight: bold;"; // ពណ៌បៃតងដិត
-                    }
+                    if (j === 2) style = "color: #0000FF; font-weight: bold;"; // ដឹកចេញ (ខៀវ)
+                    if (j === 5) style = "color: #FF0000; font-weight: bold;"; // ជំពាក់ (ក្រហម)
+                    if (j === 6) style = "color: #28a745; font-weight: bold;"; // សង (បៃតង)
 
                     html += `<td style="${style}">${cell}</td>`;
                 }
             });
             html += "</tr>";
         });
+
+        // បន្ថែមជួរ "សរុបជារួម" នៅខាងក្រោមគេ
+        html += `<tr style="background: #eee; font-weight: bold; border-top: 2px solid #444;">
+                    <td colspan="2" style="text-align: right;">សរុបជារួម:</td>
+                    <td style="color: #0000FF;">${totals.out}</td>
+                    <td>${totals.in}</td>
+                    <td>${totals.sold}</td>
+                    <td style="color: #FF0000;">${totals.debt}</td>
+                    <td style="color: #28a745;">${totals.payback}</td>
+                    <td>---</td>
+                 </tr>`;
+
         html += "</table>";
         document.getElementById("reportTableContainer").innerHTML = html;
         document.getElementById("reportModal").style.display = "block";
     })
-    .catch(err => alert("❌ មិនអាចទាញទិន្នន័យបាន៖ " + err))
+    .catch(err => alert("❌ បញ្ហា៖ " + err))
     .finally(() => { btn.innerText = oldText; btn.disabled = false; });
 }
-
 function closeModal() { document.getElementById("reportModal").style.display = "none"; }
 </script>
 </body>
 </html>
+
 
 
