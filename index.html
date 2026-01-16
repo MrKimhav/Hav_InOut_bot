@@ -96,7 +96,8 @@
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 id="modalTitle" style="text-align:center; color:#1a73e8;">📊 របាយការណ៍</h2>
-        <div id="reportTableContainer"></div>
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 ស្វែងរកឈ្មោះគោលដៅ..." style="margin-bottom: 10px; padding: 10px; border-radius: 20px; border: 1px solid #ccc;">
+<div id="reportTableContainer"></div>
     </div>
 </div>
 
@@ -213,9 +214,29 @@ function fetchReport(sheetName, btn) {
     .finally(() => { btn.innerText = oldText; btn.disabled = false; });
 }
 function closeModal() { document.getElementById("reportModal").style.display = "none"; }
+    function filterTable() {
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toLowerCase();
+    let table = document.querySelector("#reportTableContainer table");
+    let tr = table.getElementsByTagName("tr");
+
+    // ចាប់ផ្តើមឆែកពីជួរទី ១ ( skip header ) រហូតដល់ជួរមុន "សរុបជារួម"
+    for (let i = 1; i < tr.length - 1; i++) {
+        let td = tr[i].getElementsByTagName("td")[1]; // Column ទី ២ គឺជា "គោលដៅ"
+        if (td) {
+            let txtValue = td.textContent || td.innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 </script>
 </body>
 </html>
+
 
 
 
